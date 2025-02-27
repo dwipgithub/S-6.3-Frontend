@@ -1,6 +1,7 @@
 import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./components/Login/Login";
+import { CSRFTokenProvider } from "./components/Context/CSRFTokenContext.js";
 
 import SSO_Login from "./components/Login/Sso_Login";
 import SSO_Verif from "./components/Login/SSO_Verif";
@@ -134,733 +135,735 @@ import MaintenancePage from "./components/MaintenancePage/MaintenancePage.js";
 
 function App() {
   return (
-    <MemoryRouter initialEntries={["/beranda"]}>
-      <Routes>
-        <Route path="/" element={<SSO_Login />} />
-        <Route path="/verif" element={<SSO_Verif />} />
-        {/* <Route path="/" element={<Login />} /> */}
-        <Route
-          path="/beranda"
-          element={
-            <>
-              <NavigationBar />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/user/tambahuser"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahUser />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/user/ubahpassword"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahPassword />
-              <Footer />
-            </>
-          }
-        />
+    <CSRFTokenProvider>
+      <MemoryRouter initialEntries={["/beranda"]}>
+        <Routes>
+          <Route path="/" element={<SSO_Login />} />
+          <Route path="/verif" element={<SSO_Verif />} />
+          {/* <Route path="/" element={<Login />} /> */}
+          <Route
+            path="/beranda"
+            element={
+              <>
+                <NavigationBar />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/user/tambahuser"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahUser />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/user/ubahpassword"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahPassword />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl31"
-          element={
-            <>
-              <NavigationBar />
-              <RL31 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl31"
+            element={
+              <>
+                <NavigationBar />
+                <RL31 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl32"
-          element={
-            <>
-              <NavigationBar />
-              <RL32 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl32/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL32 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl32/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL32 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl32"
+            element={
+              <>
+                <NavigationBar />
+                <RL32 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl32/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL32 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl32/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL32 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl33"
-          element={
-            <>
-              <NavigationBar />
-              <MaintenancePage />
-              {/* <RL33 /> */}
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl33/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL33 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl33/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL33 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl33"
+            element={
+              <>
+                <NavigationBar />
+                <MaintenancePage />
+                {/* <RL33 /> */}
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl33/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL33 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl33/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL33 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl34"
-          element={
-            <>
-              <NavigationBar />
-              <RL34 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl34/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL34 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl34/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL34 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl34"
+            element={
+              <>
+                <NavigationBar />
+                <RL34 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl34/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL34 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl34/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL34 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl35"
-          element={
-            <>
-              <NavigationBar />
-              <RL35 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl35/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL35 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl35/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL35 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl35"
+            element={
+              <>
+                <NavigationBar />
+                <RL35 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl35/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL35 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl35/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL35 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl36"
-          element={
-            <>
-              <NavigationBar />
-              <RL36 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl36/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL36 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl36/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL36 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl36"
+            element={
+              <>
+                <NavigationBar />
+                <RL36 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl36/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL36 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl36/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL36 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl37"
-          element={
-            <>
-              <NavigationBar />
-              <RL37 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl37/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL37 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl37/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL37 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl37"
+            element={
+              <>
+                <NavigationBar />
+                <RL37 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl37/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL37 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl37/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL37 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl38"
-          element={
-            <>
-              <NavigationBar />
-              <RL38 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl38/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL38 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl38/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormEditRL38 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl38"
+            element={
+              <>
+                <NavigationBar />
+                <RL38 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl38/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL38 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl38/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormEditRL38 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl39"
-          element={
-            <>
-              <NavigationBar />
-              <RL39 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl39/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL39 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl39/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL39 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl39"
+            element={
+              <>
+                <NavigationBar />
+                <RL39 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl39/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL39 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl39/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL39 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl310"
-          element={
-            <>
-              <NavigationBar />
-              <MaintenancePage />
-              {/* <RL310 /> */}
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl310/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL310 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl310/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormEditRL310 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl310"
+            element={
+              <>
+                <NavigationBar />
+                <MaintenancePage />
+                {/* <RL310 /> */}
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl310/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL310 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl310/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormEditRL310 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/RL311"
-          element={
-            <>
-              <NavigationBar />
-              <RL311 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl311/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL311 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl311/edit/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormEditRL311 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/RL311"
+            element={
+              <>
+                <NavigationBar />
+                <RL311 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl311/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL311 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl311/edit/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormEditRL311 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/RL312"
-          element={
-            <>
-              <NavigationBar />
-              <RL312 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/RL312"
+            element={
+              <>
+                <NavigationBar />
+                <RL312 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl312/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL312 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl312/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL312 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl312/edit/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormEditRL312 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl312/edit/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormEditRL312 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/RL313"
-          element={
-            <>
-              <NavigationBar />
-              <RL313 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/RL313"
+            element={
+              <>
+                <NavigationBar />
+                <RL313 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl313/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL313 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl313/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL313 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl313/edit/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormEditRL313 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl313/edit/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormEditRL313 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/RL314"
-          element={
-            <>
-              <NavigationBar />
-              <RL314 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl314/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL314 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl314/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL314 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/RL314"
+            element={
+              <>
+                <NavigationBar />
+                <RL314 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl314/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL314 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl314/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL314 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl315"
-          element={
-            <>
-              <NavigationBar />
-              <RL315 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl315/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL315 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl315/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL315 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl315"
+            element={
+              <>
+                <NavigationBar />
+                <RL315 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl315/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL315 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl315/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL315 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/RL316"
-          element={
-            <>
-              <NavigationBar />
-              <RL316 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl316/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL316 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl316/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL316 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/RL316"
+            element={
+              <>
+                <NavigationBar />
+                <RL316 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl316/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL316 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl316/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL316 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl317"
-          element={
-            <>
-              <NavigationBar />
-              <RL317 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl317/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL317 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl317/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL317 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl317"
+            element={
+              <>
+                <NavigationBar />
+                <RL317 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl317/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL317 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl317/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL317 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl318"
-          element={
-            <>
-              <NavigationBar />
-              <RL318 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl318/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL318 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl318/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL318 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl318"
+            element={
+              <>
+                <NavigationBar />
+                <RL318 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl318/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL318 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl318/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL318 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl319"
-          element={
-            <>
-              <NavigationBar />
-              <RL319 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl319/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL319 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl319/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL319 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl319"
+            element={
+              <>
+                <NavigationBar />
+                <RL319 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl319/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL319 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl319/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL319 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl41"
-          element={
-            <>
-              <NavigationBar />
-              <RL41 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl41/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL41 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl41/ubah/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormUbahRL41 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl41"
+            element={
+              <>
+                <NavigationBar />
+                <RL41 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl41/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL41 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl41/ubah/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormUbahRL41 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl42"
-          element={
-            <>
-              <NavigationBar />
-              <RL42 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl42"
+            element={
+              <>
+                <NavigationBar />
+                <RL42 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl43"
-          element={
-            <>
-              <NavigationBar />
-              <RL43 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/rl43"
+            element={
+              <>
+                <NavigationBar />
+                <RL43 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/RL51"
-          element={
-            <>
-              <NavigationBar />
-              <RL51 />
-              <Footer />
-            </>
-          }
-        />
+          <Route
+            path="/RL51"
+            element={
+              <>
+                <NavigationBar />
+                <RL51 />
+                <Footer />
+              </>
+            }
+          />
 
-        <Route
-          path="/rl51/tambah"
-          element={
-            <>
-              <NavigationBar />
-              <FormTambahRL51 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl51/edit/:id"
-          element={
-            <>
-              <NavigationBar />
-              <FormEditRL51 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl52"
-          element={
-            <>
-              <NavigationBar />
-              <RL52 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/rl53"
-          element={
-            <>
-              <NavigationBar />
-              <RL53 />
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/absensi"
-          element={
-            <>
-              <NavigationBar />
-              <Absensi />
-              <Footer />
-            </>
-          }
-        />
-        <Route path="*" element={<PageNotFound />} status={404} />
-      </Routes>
-    </MemoryRouter>
+          <Route
+            path="/rl51/tambah"
+            element={
+              <>
+                <NavigationBar />
+                <FormTambahRL51 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl51/edit/:id"
+            element={
+              <>
+                <NavigationBar />
+                <FormEditRL51 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl52"
+            element={
+              <>
+                <NavigationBar />
+                <RL52 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/rl53"
+            element={
+              <>
+                <NavigationBar />
+                <RL53 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/absensi"
+            element={
+              <>
+                <NavigationBar />
+                <Absensi />
+                <Footer />
+              </>
+            }
+          />
+          <Route path="*" element={<PageNotFound />} status={404} />
+        </Routes>
+      </MemoryRouter>
+    </CSRFTokenProvider>
   );
 }
 

@@ -1,187 +1,197 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import jwt_decode from 'jwt-decode'
-import { useNavigate } from 'react-router-dom'
-import style from './FormTambahRL52.module.css'
-import { HiSaveAs } from 'react-icons/hi'
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'
-import 'react-confirm-alert/src/react-confirm-alert.css'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import jwt_decode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import style from "./FormTambahRL52.module.css";
+import { HiSaveAs } from "react-icons/hi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "react-confirm-alert/src/react-confirm-alert.css";
 import Table from "react-bootstrap/Table";
 import { Modal } from "react-bootstrap";
-import { downloadExcel } from 'react-export-table-to-excel'
+import { downloadExcel } from "react-export-table-to-excel";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const RL52 = () => {
-    const [tahun, setTahun] = useState("2025");
-    const [bulan, setBulan] = useState("01");
-    const [dataRL, setDataRL] = useState([]);
-    const [token, setToken] = useState("");
-    const [expire, setExpire] = useState("");
-    const navigate = useNavigate();
-    const [spinner, setSpinner] = useState(false);
-  
-    //baru
-    const [filterLabel, setFilterLabel] = useState([]);
-    const [daftarBulan, setDaftarBulan] = useState([]);
-    const [rumahSakit, setRumahSakit] = useState("");
-    const [daftarRumahSakit, setDaftarRumahSakit] = useState([]);
-    const [daftarProvinsi, setDaftarProvinsi] = useState([]);
-    const [daftarKabKota, setDaftarKabKota] = useState([]);
-    const [show, setShow] = useState(false);
-    const [user, setUser] = useState({});
+  const [tahun, setTahun] = useState("2025");
+  const [bulan, setBulan] = useState("01");
+  const [dataRL, setDataRL] = useState([]);
+  const [token, setToken] = useState("");
+  const [expire, setExpire] = useState("");
+  const navigate = useNavigate();
+  const [spinner, setSpinner] = useState(false);
 
-    useEffect(() => {
-        refreshToken()
-        getBulan();
-        // const getLastYear = async () => {
-        //   const date = new Date();
-        //   setTahun(date.getFullYear() );
-        //   return date.getFullYear() ;
-        // };
-        // getLastYear().then((results) => {});
-  
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+  //baru
+  const [filterLabel, setFilterLabel] = useState([]);
+  const [daftarBulan, setDaftarBulan] = useState([]);
+  const [rumahSakit, setRumahSakit] = useState("");
+  const [daftarRumahSakit, setDaftarRumahSakit] = useState([]);
+  const [daftarProvinsi, setDaftarProvinsi] = useState([]);
+  const [daftarKabKota, setDaftarKabKota] = useState([]);
+  const [show, setShow] = useState(false);
+  const [user, setUser] = useState({});
+  const { CSRFToken } = useCSRFTokenContext();
 
-    const refreshToken = async () => {
-        try {
-          const response = await axios.get("/apisirs6v2/token");
-          setToken(response.data.accessToken);
-          const decoded = jwt_decode(response.data.accessToken);
-          showRumahSakit(decoded.satKerId);
-          setExpire(decoded.exp);
-          setUser(decoded);
-          // setExpire(decoded.exp);
-          // getDataRS(decoded.rsId);
-        } catch (error) {
-          if (error.response) {
-            navigate("/");
-          }
-        }
-      };
-    
-      const axiosJWT = axios.create();
-      axiosJWT.interceptors.request.use(
-        async (config) => {
-          const currentDate = new Date();
-          if (expire * 1000 < currentDate.getTime()) {
-            const response = await axios.get("/apisirs6v2/token");
-            config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-            setToken(response.data.accessToken);
-            const decoded = jwt_decode(response.data.accessToken);
-            setExpire(decoded.exp);
-          }
-          return config;
+  useEffect(() => {
+    refreshToken();
+    getBulan();
+    // const getLastYear = async () => {
+    //   const date = new Date();
+    //   setTahun(date.getFullYear() );
+    //   return date.getFullYear() ;
+    // };
+    // getLastYear().then((results) => {});
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const refreshToken = async () => {
+    try {
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
         },
-        (error) => {
-          return Promise.reject(error);
-        }
-      );
-      const getBulan = async () => {
-        const results = [];
-        results.push({
-          key: "Januari",
-          value: "01",
-        });
-        results.push({
-          key: "Febuari",
-          value: "02",
-        });
-        results.push({
-          key: "Maret",
-          value: "03",
-        });
-        results.push({
-          key: "April",
-          value: "04",
-        });
-        results.push({
-          key: "Mei",
-          value: "05",
-        });
-        results.push({
-          key: "Juni",
-          value: "06",
-        });
-        results.push({
-          key: "Juli",
-          value: "07",
-        });
-        results.push({
-          key: "Agustus",
-          value: "08",
-        });
-        results.push({
-          key: "September",
-          value: "09",
-        });
-        results.push({
-          key: "Oktober",
-          value: "10",
-        });
-        results.push({
-          key: "November",
-          value: "11",
-        });
-        results.push({
-          key: "Desember",
-          value: "12",
-        });
-    
-        setDaftarBulan([...results]);
       };
-    
-      const bulanChangeHandler = async (e) => {
-        setBulan(e.target.value);
-      };
-    
-      const tahunChangeHandler = (event) => {
-        setTahun(event.target.value);
-      };
-    
-      const provinsiChangeHandler = (e) => {
-        const provinsiId = e.target.value;
-        getKabKota(provinsiId);
-      };
-    
-      const kabKotaChangeHandler = (e) => {
-        const kabKotaId = e.target.value;
-        getRumahSakit(kabKotaId);
-      };
-    
-      const rumahSakitChangeHandler = (e) => {
-        const rsId = e.target.value;
-        showRumahSakit(rsId);
-      };
-    
-      const getRumahSakit = async (kabKotaId) => {
-        try {
-          const response = await axiosJWT.get("/apisirs6v2/rumahsakit/", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            params: {
-              kabKotaId: kabKotaId,
-            },
-          });
-          setDaftarRumahSakit(response.data.data);
-        } catch (error) {}
-      };
-    
-      const showRumahSakit = async (id) => {
-        try {
-          const response = await axiosJWT.get("/apisirs6v2/rumahsakit/" + id, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-    
-          setRumahSakit(response.data.data);
-        } catch (error) {}
-      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
+      setToken(response.data.accessToken);
+      const decoded = jwt_decode(response.data.accessToken);
+      showRumahSakit(decoded.satKerId);
+      setExpire(decoded.exp);
+      setUser(decoded);
+      // setExpire(decoded.exp);
+      // getDataRS(decoded.rsId);
+    } catch (error) {
+      if (error.response) {
+        navigate("/");
+      }
+    }
+  };
 
+  const axiosJWT = axios.create();
+  axiosJWT.interceptors.request.use(
+    async (config) => {
+      const currentDate = new Date();
+      if (expire * 1000 < currentDate.getTime()) {
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
+        config.headers.Authorization = `Bearer ${response.data.accessToken}`;
+        setToken(response.data.accessToken);
+        const decoded = jwt_decode(response.data.accessToken);
+        setExpire(decoded.exp);
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+  const getBulan = async () => {
+    const results = [];
+    results.push({
+      key: "Januari",
+      value: "01",
+    });
+    results.push({
+      key: "Febuari",
+      value: "02",
+    });
+    results.push({
+      key: "Maret",
+      value: "03",
+    });
+    results.push({
+      key: "April",
+      value: "04",
+    });
+    results.push({
+      key: "Mei",
+      value: "05",
+    });
+    results.push({
+      key: "Juni",
+      value: "06",
+    });
+    results.push({
+      key: "Juli",
+      value: "07",
+    });
+    results.push({
+      key: "Agustus",
+      value: "08",
+    });
+    results.push({
+      key: "September",
+      value: "09",
+    });
+    results.push({
+      key: "Oktober",
+      value: "10",
+    });
+    results.push({
+      key: "November",
+      value: "11",
+    });
+    results.push({
+      key: "Desember",
+      value: "12",
+    });
 
-   
+    setDaftarBulan([...results]);
+  };
+
+  const bulanChangeHandler = async (e) => {
+    setBulan(e.target.value);
+  };
+
+  const tahunChangeHandler = (event) => {
+    setTahun(event.target.value);
+  };
+
+  const provinsiChangeHandler = (e) => {
+    const provinsiId = e.target.value;
+    getKabKota(provinsiId);
+  };
+
+  const kabKotaChangeHandler = (e) => {
+    const kabKotaId = e.target.value;
+    getRumahSakit(kabKotaId);
+  };
+
+  const rumahSakitChangeHandler = (e) => {
+    const rsId = e.target.value;
+    showRumahSakit(rsId);
+  };
+
+  const getRumahSakit = async (kabKotaId) => {
+    try {
+      const response = await axiosJWT.get("/apisirs6v2/rumahsakit/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          kabKotaId: kabKotaId,
+        },
+      });
+      setDaftarRumahSakit(response.data.data);
+    } catch (error) {}
+  };
+
+  const showRumahSakit = async (id) => {
+    try {
+      const response = await axiosJWT.get("/apisirs6v2/rumahsakit/" + id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setRumahSakit(response.data.data);
+    } catch (error) {}
+  };
+
   const getRL = async (e) => {
     e.preventDefault();
     if (rumahSakit == null) {
@@ -209,13 +219,11 @@ const RL52 = () => {
         "/apisirs6v2/rllimatitikdua",
         customConfig
       );
-      
+
       const rlLimaTitikDuaDetails = results.data.data.map((value) => {
         return value;
       });
-      
-      
-      
+
       console.log(rlLimaTitikDuaDetails);
       setDataRL(rlLimaTitikDuaDetails);
       setRumahSakit(null);
@@ -258,42 +266,42 @@ const RL52 = () => {
 
   function handleDownloadExcel() {
     const header = [
-        "No", 
-        "Kelompok ICD-10", 
-        "Kelompok Diagnosa Penyakit", 
-        "Jumlah Kasus Baru Menurut Jenis Kelamin Laki-Laki",
-        "Jumlah Kasus Baru Menurut Jenis Kelamin Perempuan",
-        "Total Jumlah Kasus Baru",
-        "Jumlah Kunjungan Laki-Laki",
-        "Jumlah Kunjungan Perempuan",
-        "Total Jumlah Kunjungan"
-    ]
-    console.log(dataRL)
+      "No",
+      "Kelompok ICD-10",
+      "Kelompok Diagnosa Penyakit",
+      "Jumlah Kasus Baru Menurut Jenis Kelamin Laki-Laki",
+      "Jumlah Kasus Baru Menurut Jenis Kelamin Perempuan",
+      "Total Jumlah Kasus Baru",
+      "Jumlah Kunjungan Laki-Laki",
+      "Jumlah Kunjungan Perempuan",
+      "Total Jumlah Kunjungan",
+    ];
+    console.log(dataRL);
 
-        const body = dataRL.map((value, index) => {
-            const data = [
-                index + 1,
-                value.icd_code_group,
-                value.description_code_group,
-                value.jumlah_kasus_baru_L,
-                value.jumlah_kasus_baru_P,
-                value.total_kasus_baru_group_by_icd_code,
-                value.jumlah_kunjungan_L,
-                value.jumlah_kunjungan_P,
-                value.total_jumlah_kunjungan_group_by_icd_code
-            ]
-            return data
-        })
+    const body = dataRL.map((value, index) => {
+      const data = [
+        index + 1,
+        value.icd_code_group,
+        value.description_code_group,
+        value.jumlah_kasus_baru_L,
+        value.jumlah_kasus_baru_P,
+        value.total_kasus_baru_group_by_icd_code,
+        value.jumlah_kunjungan_L,
+        value.jumlah_kunjungan_P,
+        value.total_jumlah_kunjungan_group_by_icd_code,
+      ];
+      return data;
+    });
 
-        downloadExcel({
-            fileName: "RL52-10 Besar Kasus Baru Penyakit Rawat Jalan",
-            sheet: "Kasus baru",
-            tablePayload: {
-                header,
-                body: body,
-            },
-        })
-    }
+    downloadExcel({
+      fileName: "RL52-10 Besar Kasus Baru Penyakit Rawat Jalan",
+      sheet: "Kasus baru",
+      tablePayload: {
+        header,
+        body: body,
+      },
+    });
+  }
 
   const getProvinsi = async () => {
     try {
@@ -338,9 +346,15 @@ const RL52 = () => {
     }
   };
 
-    return (
-        <div className="container" style={{ marginTop: "70px" , marginBottom: "70px"}}>
-         <h4 style={{  color: "grey" }}> <span> RL 5.2 10 Besar Kasus Baru Penyakit Rawat Jalan</span></h4>
+  return (
+    <div
+      className="container"
+      style={{ marginTop: "70px", marginBottom: "70px" }}
+    >
+      <h4 style={{ color: "grey" }}>
+        {" "}
+        <span> RL 5.2 10 Besar Kasus Baru Penyakit Rawat Jalan</span>
+      </h4>
       <Modal show={show} onHide={handleClose} style={{ position: "fixed" }}>
         <Modal.Header closeButton>
           <Modal.Title>Filter</Modal.Title>
@@ -564,12 +578,8 @@ const RL52 = () => {
       </Modal>
       <div className="row">
         <div className="col-md-12">
-        <div style={{ marginBottom: "10px" }}>
-            {user.jenisUserId === 4 ? (
-              <></>
-            ) : (
-              <></>
-            )}
+          <div style={{ marginBottom: "10px" }}>
+            {user.jenisUserId === 4 ? <></> : <></>}
             <button
               className="btn"
               style={{
@@ -581,111 +591,114 @@ const RL52 = () => {
             >
               Filter
             </button>
-             <button className='btn' style={{ fontSize: "18px", marginLeft: "5px", backgroundColor: "#779D9E", color: "#FFFFFF" }} onClick={handleDownloadExcel}>Download</button>
+            <button
+              className="btn"
+              style={{
+                fontSize: "18px",
+                marginLeft: "5px",
+                backgroundColor: "#779D9E",
+                color: "#FFFFFF",
+              }}
+              onClick={handleDownloadExcel}
+            >
+              Download
+            </button>
           </div>
         </div>
-        
+
         <div>
           <h5 style={{ fontSize: "14px" }}>
-              {" "}
-              {filterLabel
-                .map((value) => {
-                  return value;
-                })
-                .join(", ")}
-            </h5>
+            {" "}
+            {filterLabel
+              .map((value) => {
+                return value;
+              })
+              .join(", ")}
+          </h5>
         </div>
         <Table
-            className={style.rlTable}
-            striped
-            bordered
-            responsive
-            style={{ width: "100%" }}
-          >
-            <thead>
-              <tr>
-                <th
-                  rowSpan={3}
-                  style={{ verticalAlign: "middle" }}
-                >
-                  No.
-                </th>
-                <th
-                  rowSpan={3}
-                  style={{ width:"5%",textAlign: "center", verticalAlign: "middle" }}
-                >
-                  Kode ICD-10
-                </th>
-                <th
-                  rowSpan={3}
-                  style={{ textAlign: "left", verticalAlign: "middle" }}
-                >
-                  Diagnosis Penyakit
-                </th>
-                <th
-                  colSpan={3}
-                  // rowSpan={2}
-                  style={{ width:"30%" ,textAlign: "center", verticalAlign: "middle" }}
-                >
-                  Jumlah Kasus Baru Menurut Jenis Kelamin
-                </th>
-                <th
-                  colSpan={3}
-                  // rowSpan={2}
-                  style={{ textAlign: "center", verticalAlign: "middle" }}
-                >
-                  Jumlah Kunjungan
-                </th>
-              </tr>
-              <tr>
-                <th style={{ textAlign: "center" }}>Laki-Laki</th>
-                <th style={{ textAlign: "center" }}>Perempuan</th>
-                <th style={{ textAlign: "center" }}>Total</th>
-                <th style={{ textAlign: "center" }}>Laki-Laki</th>
-                <th style={{ textAlign: "center" }}>Perempuan</th>
-                <th style={{ textAlign: "center" }}>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataRL.map((value, index) => {
-                return (
-                  <tr style= {{verticalAlign: "center" }} key={index}>
-                    <td>
-                      <label>{index + 1}</label>
-                    </td>
-                    <td style={{ textAlign: "center " }}>
-                      <label>{value.icd_code_group}</label>
-                    </td>
-                    <td style={{ textAlign: "left" }}>
-                      <label>{value.description_code_group}</label>
-                    </td>
-                    <td>
-                      {value.jumlah_kasus_baru_L }
-                    </td>
-                    <td>
-                      {value.jumlah_kasus_baru_P}
-                    </td>
-                    <td>
-                      {value.total_kasus_baru_group_by_icd_code}
-                    </td>
-                    <td>
-                      {value.jumlah_kunjungan_L}
-                    </td>
-                    <td>
-                      {value.jumlah_kunjungan_P}
-                    </td>
-                    <td>
-                      {value.total_jumlah_kunjungan_group_by_icd_code}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
+          className={style.rlTable}
+          striped
+          bordered
+          responsive
+          style={{ width: "100%" }}
+        >
+          <thead>
+            <tr>
+              <th rowSpan={3} style={{ verticalAlign: "middle" }}>
+                No.
+              </th>
+              <th
+                rowSpan={3}
+                style={{
+                  width: "5%",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                }}
+              >
+                Kode ICD-10
+              </th>
+              <th
+                rowSpan={3}
+                style={{ textAlign: "left", verticalAlign: "middle" }}
+              >
+                Diagnosis Penyakit
+              </th>
+              <th
+                colSpan={3}
+                // rowSpan={2}
+                style={{
+                  width: "30%",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                }}
+              >
+                Jumlah Kasus Baru Menurut Jenis Kelamin
+              </th>
+              <th
+                colSpan={3}
+                // rowSpan={2}
+                style={{ textAlign: "center", verticalAlign: "middle" }}
+              >
+                Jumlah Kunjungan
+              </th>
+            </tr>
+            <tr>
+              <th style={{ textAlign: "center" }}>Laki-Laki</th>
+              <th style={{ textAlign: "center" }}>Perempuan</th>
+              <th style={{ textAlign: "center" }}>Total</th>
+              <th style={{ textAlign: "center" }}>Laki-Laki</th>
+              <th style={{ textAlign: "center" }}>Perempuan</th>
+              <th style={{ textAlign: "center" }}>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataRL.map((value, index) => {
+              return (
+                <tr style={{ verticalAlign: "center" }} key={index}>
+                  <td>
+                    <label>{index + 1}</label>
+                  </td>
+                  <td style={{ textAlign: "center " }}>
+                    <label>{value.icd_code_group}</label>
+                  </td>
+                  <td style={{ textAlign: "left" }}>
+                    <label>{value.description_code_group}</label>
+                  </td>
+                  <td>{value.jumlah_kasus_baru_L}</td>
+                  <td>{value.jumlah_kasus_baru_P}</td>
+                  <td>{value.total_kasus_baru_group_by_icd_code}</td>
+                  <td>{value.jumlah_kunjungan_L}</td>
+                  <td>{value.jumlah_kunjungan_P}</td>
+                  <td>{value.total_jumlah_kunjungan_group_by_icd_code}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
       </div>
     </div>
-    )
-    
-}
+  );
+};
 
-export default RL52
+export default RL52;

@@ -10,7 +10,8 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Table from "react-bootstrap/Table";
 import { Modal } from "react-bootstrap";
-import { downloadExcel } from 'react-export-table-to-excel'
+import { downloadExcel } from "react-export-table-to-excel";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const RL43 = () => {
   // const [namaRS, setNamaRS] = useState("");
@@ -34,6 +35,7 @@ const RL43 = () => {
   const [daftarKabKota, setDaftarKabKota] = useState([]);
   const [show, setShow] = useState(false);
   const [user, setUser] = useState({});
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -49,7 +51,12 @@ const RL43 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       showRumahSakit(decoded.satKerId);
@@ -69,7 +76,12 @@ const RL43 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -184,7 +196,6 @@ const RL43 = () => {
     } catch (error) {}
   };
 
-
   const getRL = async (e) => {
     e.preventDefault();
     if (rumahSakit == null) {
@@ -212,12 +223,11 @@ const RL43 = () => {
         "/apisirs6v2/rlempattitiktiga",
         customConfig
       );
-      
+
       const rlEmpatDetails = results.data.data.map((value) => {
         return value;
       });
 
-      
       console.log(rlEmpatDetails);
       setDataRL(rlEmpatDetails);
       setRumahSakit(null);
@@ -312,43 +322,46 @@ const RL43 = () => {
 
   function handleDownloadExcel() {
     const header = [
-        "No", 
-        "Kelompok ICD-10", 
-        "Kelompok Diagnosa Penyakit", 
-        "Jumlah Pasien Hidup dan Mati Menurut Jenis Kelamin Laki-Laki",
-        "Jumlah Pasien Hidup dan Mati Menurut Jenis Kelamin Perempuan",
-        "Total Jumlah Pasien Hidup dan Mati Menurut Jenis Kelamin",
-        "Jumlah Pasien Keluar Mati Laki-Laki",
-        "Jumlah Pasien Keluar Mati Perempuan",
-        "Total Jumlah Pasien Keluar Mati "
-    ]
+      "No",
+      "Kelompok ICD-10",
+      "Kelompok Diagnosa Penyakit",
+      "Jumlah Pasien Hidup dan Mati Menurut Jenis Kelamin Laki-Laki",
+      "Jumlah Pasien Hidup dan Mati Menurut Jenis Kelamin Perempuan",
+      "Total Jumlah Pasien Hidup dan Mati Menurut Jenis Kelamin",
+      "Jumlah Pasien Keluar Mati Laki-Laki",
+      "Jumlah Pasien Keluar Mati Perempuan",
+      "Total Jumlah Pasien Keluar Mati ",
+    ];
     // console.log("tes")
     // console.log(dataRL)
 
     const body = dataRL.map((value, index) => {
-        const data = [
-            index + 1,
-            value.icd_code_group,
-            value.description_code_group,
-            value.jmlh_pas_hidup_mati_laki,
-            value.jmlh_pas_hidup_mati_perempuan,
-            value.total_pas_hidup_mati_group_by_icd_code,
-            value.jmlh_pas_keluar_mati_gen_laki,
-            value.jmlh_pas_keluar_mati_gen_perempuan,
-            value.total_pas_keluar_mati_group_by_icd_code
-        ]
-        return data
-    })
+      const data = [
+        index + 1,
+        value.icd_code_group,
+        value.description_code_group,
+        value.jmlh_pas_hidup_mati_laki,
+        value.jmlh_pas_hidup_mati_perempuan,
+        value.total_pas_hidup_mati_group_by_icd_code,
+        value.jmlh_pas_keluar_mati_gen_laki,
+        value.jmlh_pas_keluar_mati_gen_perempuan,
+        value.total_pas_keluar_mati_group_by_icd_code,
+      ];
+      return data;
+    });
 
     downloadExcel({
-        fileName: "rl43_".concat(dataRL[0].rs_id).concat("_").concat(String(tahun).concat("-").concat(bulan).concat("-01")),
-        sheet: "rl43",
-        tablePayload: {
-            header,
-            body: body,
-        },
-    })
-}
+      fileName: "rl43_"
+        .concat(dataRL[0].rs_id)
+        .concat("_")
+        .concat(String(tahun).concat("-").concat(bulan).concat("-01")),
+      sheet: "rl43",
+      tablePayload: {
+        header,
+        body: body,
+      },
+    });
+  }
 
   return (
     <div className="container" style={{ marginTop: "70px" }}>
@@ -575,8 +588,11 @@ const RL43 = () => {
       </Modal>
       <div className="row">
         <div className="col-md-12">
-        <span style={{ color: "gray" }}> <h4> RL 4.3 - 10 Besar Kematian Penyakit Pasien Rawat Inap</h4></span>
-        <div style={{ marginBottom: "10px" }}>
+          <span style={{ color: "gray" }}>
+            {" "}
+            <h4> RL 4.3 - 10 Besar Kematian Penyakit Pasien Rawat Inap</h4>
+          </span>
+          <div style={{ marginBottom: "10px" }}>
             <button
               className="btn"
               style={{
@@ -588,105 +604,109 @@ const RL43 = () => {
             >
               Filter
             </button>
-            <button className='btn' style={{ fontSize: "18px", marginLeft: "5px", backgroundColor: "#779D9E", color: "#FFFFFF" }} onClick={handleDownloadExcel}>Download</button> 
+            <button
+              className="btn"
+              style={{
+                fontSize: "18px",
+                marginLeft: "5px",
+                backgroundColor: "#779D9E",
+                color: "#FFFFFF",
+              }}
+              onClick={handleDownloadExcel}
+            >
+              Download
+            </button>
           </div>
         </div>
         <div>
           <h5 style={{ fontSize: "14px" }}>
-              {filterLabel
-                .map((value) => {
-                  return  "filtered by"+ value;
-                })
-                .join(", ")}
-            </h5>
+            {filterLabel
+              .map((value) => {
+                return "filtered by" + value;
+              })
+              .join(", ")}
+          </h5>
         </div>
         <Table
-            className={style.rlTable}
-            striped
-            bordered
-            responsive
-            style={{ width: "100%" }}
-          >
-            <thead>
-              <tr>
-                <th
-                  rowSpan={3}
-                  style={{ verticalAlign: "middle" }}
-                >
-                  No.
-                </th>
-                <th
-                  rowSpan={3}
-                  style={{ width:"5%",textAlign: "center", verticalAlign: "middle" }}
-                >
-                  Kelompok ICD-10
-                </th>
-                <th
-                  rowSpan={3}
-                  style={{ textAlign: "left", verticalAlign: "middle" }}
-                >
-                  Kelompok Diagnosa Penyakit
-                </th>
-                <th
-                  colSpan={3}
-                  // rowSpan={2}
-                  style={{ width:"30%" ,textAlign: "center", verticalAlign: "middle" }}
-                >
-                  Jumlah Pasien Hidup dan Mati Menurut Jenis Kelamin
-                </th>
-                <th
-                  colSpan={3}
-                  // rowSpan={2}
-                  style={{ textAlign: "center", verticalAlign: "middle" }}
-                >
-                  Jumlah Pasien Keluar Mati
-                </th>
-              </tr>
-              <tr>
-                <th style={{ textAlign: "center" }}>Laki-Laki</th>
-                <th style={{ textAlign: "center" }}>Perempuan</th>
-                <th style={{ textAlign: "center" }}>Total</th>
-                <th style={{ textAlign: "center" }}>Laki-Laki</th>
-                <th style={{ textAlign: "center" }}>Perempuan</th>
-                <th style={{ textAlign: "center" }}>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataRL.map((value, index) => {
-                return (
-                  <tr style= {{verticalAlign: "center" }} key={index}>
-                    <td>
-                      <label>{index + 1}</label>
-                    </td>
-                    <td style={{ textAlign: "center " }}>
-                      <label>{value.icd_code_group}</label>
-                    </td>
-                    <td style={{ textAlign: "left" }}>
-                      <label>{value.description_code_group}</label>
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_laki }
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_perempuan}
-                    </td>
-                    <td>
-                      {value.total_pas_hidup_mati_group_by_icd_code}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_keluar_mati_gen_laki}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_keluar_mati_gen_perempuan}
-                    </td>
-                    <td>
-                      {value.total_pas_keluar_mati_group_by_icd_code}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
+          className={style.rlTable}
+          striped
+          bordered
+          responsive
+          style={{ width: "100%" }}
+        >
+          <thead>
+            <tr>
+              <th rowSpan={3} style={{ verticalAlign: "middle" }}>
+                No.
+              </th>
+              <th
+                rowSpan={3}
+                style={{
+                  width: "5%",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                }}
+              >
+                Kelompok ICD-10
+              </th>
+              <th
+                rowSpan={3}
+                style={{ textAlign: "left", verticalAlign: "middle" }}
+              >
+                Kelompok Diagnosa Penyakit
+              </th>
+              <th
+                colSpan={3}
+                // rowSpan={2}
+                style={{
+                  width: "30%",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                }}
+              >
+                Jumlah Pasien Hidup dan Mati Menurut Jenis Kelamin
+              </th>
+              <th
+                colSpan={3}
+                // rowSpan={2}
+                style={{ textAlign: "center", verticalAlign: "middle" }}
+              >
+                Jumlah Pasien Keluar Mati
+              </th>
+            </tr>
+            <tr>
+              <th style={{ textAlign: "center" }}>Laki-Laki</th>
+              <th style={{ textAlign: "center" }}>Perempuan</th>
+              <th style={{ textAlign: "center" }}>Total</th>
+              <th style={{ textAlign: "center" }}>Laki-Laki</th>
+              <th style={{ textAlign: "center" }}>Perempuan</th>
+              <th style={{ textAlign: "center" }}>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataRL.map((value, index) => {
+              return (
+                <tr style={{ verticalAlign: "center" }} key={index}>
+                  <td>
+                    <label>{index + 1}</label>
+                  </td>
+                  <td style={{ textAlign: "center " }}>
+                    <label>{value.icd_code_group}</label>
+                  </td>
+                  <td style={{ textAlign: "left" }}>
+                    <label>{value.description_code_group}</label>
+                  </td>
+                  <td>{value.jmlh_pas_hidup_mati_laki}</td>
+                  <td>{value.jmlh_pas_hidup_mati_perempuan}</td>
+                  <td>{value.total_pas_hidup_mati_group_by_icd_code}</td>
+                  <td>{value.jmlh_pas_keluar_mati_gen_laki}</td>
+                  <td>{value.jmlh_pas_keluar_mati_gen_perempuan}</td>
+                  <td>{value.total_pas_keluar_mati_group_by_icd_code}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
       </div>
     </div>
   );

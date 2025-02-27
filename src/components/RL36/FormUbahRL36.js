@@ -9,6 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 export const FormUbahRL36 = () => {
   const [tahun, setTahun] = useState("");
@@ -49,6 +50,7 @@ export const FormUbahRL36 = () => {
 
   const [buttonStatus, setButtonStatus] = useState(false);
   const [spinner, setSpinner] = useState(false);
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -59,7 +61,12 @@ export const FormUbahRL36 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -76,7 +83,12 @@ export const FormUbahRL36 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -255,6 +267,7 @@ export const FormUbahRL36 = () => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "XSRF-TOKEN": CSRFToken,
         },
       };
       await axiosJWT.patch(
@@ -285,7 +298,6 @@ export const FormUbahRL36 = () => {
         navigate("/rl36");
       }, 1000);
     } catch (error) {
-      console.log(error);
       toast("Data Gagal Diupdate", {
         position: toast.POSITION.TOP_RIGHT,
       });

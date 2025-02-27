@@ -11,6 +11,7 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 // import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
 import { downloadExcel } from "react-export-table-to-excel";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const RL36 = () => {
   const [bulan, setBulan] = useState(1);
@@ -29,6 +30,7 @@ const RL36 = () => {
   const [user, setUser] = useState({});
   const navigate = useNavigate();
   const [spinner, setSpinner] = useState(false);
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -44,7 +46,12 @@ const RL36 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       showRumahSakit(decoded.satKerId);
@@ -62,7 +69,12 @@ const RL36 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -545,8 +557,10 @@ const RL36 = () => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "XSRF-TOKEN": CSRFToken,
       },
     };
+
     try {
       await axiosJWT.delete(`/apisirs6v2/rltigatitikenam/${id}`, customConfig);
       setDataRL((current) => current.filter((value) => value.id !== id));

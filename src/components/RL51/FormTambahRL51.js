@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Table from "react-bootstrap/Table";
 import { IoArrowBack } from "react-icons/io5";
 import { Spinner } from "react-bootstrap";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const FormTambahRL41 = () => {
   // const [tahun, setTahun] = useState(new Date().getFullYear() - 1);
@@ -28,6 +29,7 @@ const FormTambahRL41 = () => {
   const [spinnerSearch, setSpinnerSearch] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const navigate = useNavigate();
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -36,7 +38,12 @@ const FormTambahRL41 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -53,7 +60,12 @@ const FormTambahRL41 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -408,6 +420,7 @@ const FormTambahRL41 = () => {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
+              "XSRF-TOKEN": CSRFToken,
             },
           };
           const result = await axiosJWT.post(
@@ -659,7 +672,7 @@ const FormTambahRL41 = () => {
                         placeholder="Tahun"
                         value={tahun}
                         onChange={(e) => changeHandlerSingle(e)}
-                        disabled={false}
+                        disabled={true}
                       />
                       <label htmlFor="floatingInput">Tahun</label>
                       <input

@@ -7,6 +7,7 @@ import { HiSaveAs } from "react-icons/hi";
 import Table from "react-bootstrap/Table";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 export const FormUbahRL33 = () => {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ export const FormUbahRL33 = () => {
   const [dataParentRL, setDataParentRL] = useState([]);
   const [parentId, setParentId] = useState("");
   const { id } = useParams();
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -100,6 +102,7 @@ export const FormUbahRL33 = () => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "XSRF-TOKEN": CSRFToken,
         },
       };
 

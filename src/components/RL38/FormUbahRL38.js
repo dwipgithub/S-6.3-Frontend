@@ -6,9 +6,9 @@ import style from "./RL38.module.css";
 import { HiSaveAs } from "react-icons/hi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { IoArrowBack } from "react-icons/io5";
 import Table from "react-bootstrap/esm/Table";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 export const FormEditRL38 = () => {
   const [tahun, setTahun] = useState("");
@@ -16,7 +16,8 @@ export const FormEditRL38 = () => {
   const [alamatRS, setAlamatRS] = useState("");
   const [namaPropinsi, setNamaPropinsi] = useState("");
   const [namaKabKota, setNamaKabKota] = useState("");
-  const [rLTigaTitikDelapanPemeriksaanId, setPemeriksaanRLTigaTitikDelapanId] = useState("");
+  const [rLTigaTitikDelapanPemeriksaanId, setPemeriksaanRLTigaTitikDelapanId] =
+    useState("");
   const [jumlahLaki, setJumlahLaki] = useState(0);
   const [jumlahPerempuan, setJumlahPerempuan] = useState(0);
   const [rataLaki, setRataLaki] = useState(0);
@@ -28,7 +29,8 @@ export const FormEditRL38 = () => {
   const [expire, setExpire] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
-  const [buttonStatus, setButtonStatus] = useState(false)
+  const [buttonStatus, setButtonStatus] = useState(false);
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -39,11 +41,16 @@ export const FormEditRL38 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       setExpire(decoded.exp);
-      getRumahSakit(decoded.satKerId)
+      getRumahSakit(decoded.satKerId);
     } catch (error) {
       if (error.response) {
         navigate("/");
@@ -56,7 +63,12 @@ export const FormEditRL38 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -81,27 +93,27 @@ export const FormEditRL38 = () => {
         }
         setJumlahLaki(event.target.value);
         break;
-        case "jumlahPerempuan":
-          if (event.target.value === "") {
-            event.target.value = 0;
-            event.target.select(event.target.value);
-          }
-          setJumlahPerempuan(event.target.value);
-          break;
-          case "rataLaki":
-            if (event.target.value === "") {
-              event.target.value = 0;
-              event.target.select(event.target.value);
-            }
-            setRataLaki(event.target.value);
-            break;
-            case "rataPerempuan":
-              if (event.target.value === "") {
-                event.target.value = 0;
-                event.target.select(event.target.value);
-              }
-              setRataPerempuan(event.target.value);
-              break;
+      case "jumlahPerempuan":
+        if (event.target.value === "") {
+          event.target.value = 0;
+          event.target.select(event.target.value);
+        }
+        setJumlahPerempuan(event.target.value);
+        break;
+      case "rataLaki":
+        if (event.target.value === "") {
+          event.target.value = 0;
+          event.target.select(event.target.value);
+        }
+        setRataLaki(event.target.value);
+        break;
+      case "rataPerempuan":
+        if (event.target.value === "") {
+          event.target.value = 0;
+          event.target.select(event.target.value);
+        }
+        setRataPerempuan(event.target.value);
+        break;
       default:
         break;
     }
@@ -109,48 +121,52 @@ export const FormEditRL38 = () => {
 
   const getRumahSakit = async (id) => {
     try {
-        const response = await axiosJWT.get('/apisirs6v2/rumahsakit/' + id, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        setNamaRS(response.data.data.nama)
-        setAlamatRS(response.data.data.alamat)
-        setNamaPropinsi(response.data.data.provinsi_nama)
-        setNamaKabKota(response.data.data.kab_kota_nama)
-    } catch (error) {
-
-    }
-}
-
+      const response = await axiosJWT.get("/apisirs6v2/rumahsakit/" + id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setNamaRS(response.data.data.nama);
+      setAlamatRS(response.data.data.alamat);
+      setNamaPropinsi(response.data.data.provinsi_nama);
+      setNamaKabKota(response.data.data.kab_kota_nama);
+    } catch (error) {}
+  };
 
   const getRLTigaTitikDelapanById = async () => {
-    const response = await axiosJWT.get("/apisirs6v2/rltigatitikdelapan/" + id, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axiosJWT.get(
+      "/apisirs6v2/rltigatitikdelapan/" + id,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     // console.log(response)
     // setNama(response.data.data.jenis_kegiatan.nama);
     setNo(response.data.data.jenis_kegiatan_id);
-    setPemeriksaanRLTigaTitikDelapanId(response.data.data.rl_tiga_titik_delapan_pemeriksaan.nama);
+    setPemeriksaanRLTigaTitikDelapanId(
+      response.data.data.rl_tiga_titik_delapan_pemeriksaan.nama
+    );
     setJumlahLaki(response.data.data.jumlahLaki);
     setJumlahPerempuan(response.data.data.jumlahPerempuan);
     setRataLaki(response.data.data.rataLaki);
     setRataPerempuan(response.data.data.rataPerempuan);
-  
   };
 
   const UpdateRLTigaTitikDelapan = async (e) => {
     e.preventDefault();
-    setButtonStatus(true)
+    setButtonStatus(true);
     try {
       const customConfig = {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "XSRF-TOKEN": CSRFToken,
         },
       };
+
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       const result = await axiosJWT.patch(
         "/apisirs6v2/rltigatitikdelapan/" + id,
         {
@@ -158,7 +174,7 @@ export const FormEditRL38 = () => {
           jumlahLaki,
           jumlahPerempuan,
           rataLaki,
-          rataPerempuan
+          rataPerempuan,
         },
         customConfig
       );
@@ -173,7 +189,7 @@ export const FormEditRL38 = () => {
       toast("Data Gagal Diupdate", {
         position: toast.POSITION.TOP_RIGHT,
       });
-      setButtonStatus(false)
+      setButtonStatus(false);
     }
   };
 
@@ -192,7 +208,6 @@ export const FormEditRL38 = () => {
     }
   };
 
-  
   return (
     <div className="container" style={{ marginTop: "70px" }}>
       <form onSubmit={UpdateRLTigaTitikDelapan}>
@@ -259,20 +274,37 @@ export const FormEditRL38 = () => {
         </div>
         <div className="row">
           <div className="col-md-12">
-            <Link to={`/rl38/`} className='btn btn-info' style={{fontSize:"18px", backgroundColor: "#779D9E", color: "#FFFFFF"}}>
+            <Link
+              to={`/rl38/`}
+              className="btn btn-info"
+              style={{
+                fontSize: "18px",
+                backgroundColor: "#779D9E",
+                color: "#FFFFFF",
+              }}
+            >
               {/* <IoArrowBack
                 size={30}
                 style={{ color: "gray", cursor: "pointer" }}
               /> */}
               &lt;
             </Link>
-              <span style={{ color: "gray" }}> Kembali RL 3.8 Laboratorium</span>
+            <span style={{ color: "gray" }}> Kembali RL 3.8 Laboratorium</span>
             <Table className={style.rlTable}>
               <thead>
-              <tr>
-                  <th rowSpan={2} style={{ textAlign: "center" , verticalAlign:"middle" }}>Jenis Pemeriksaan</th>
-                  <th colSpan={2} style={{ textAlign: "center" }}>Jumlah Pemeriksaan</th>
-                  <th colSpan={2} style={{ textAlign: "center" }}>Rata-Rata Pemeriksaan</th>
+                <tr>
+                  <th
+                    rowSpan={2}
+                    style={{ textAlign: "center", verticalAlign: "middle" }}
+                  >
+                    Jenis Pemeriksaan
+                  </th>
+                  <th colSpan={2} style={{ textAlign: "center" }}>
+                    Jumlah Pemeriksaan
+                  </th>
+                  <th colSpan={2} style={{ textAlign: "center" }}>
+                    Rata-Rata Pemeriksaan
+                  </th>
                 </tr>
                 <tr>
                   <th style={{ textAlign: "center" }}>Laki-Laki</th>
@@ -292,11 +324,12 @@ export const FormEditRL38 = () => {
                       disabled={true}
                     />
                   </td> */}
-                  <td style={{ textAlign: "center" , verticalAlign:"middle" }}>{rLTigaTitikDelapanPemeriksaanId}
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                    {rLTigaTitikDelapanPemeriksaanId}
                   </td>
                   <td>
-                    {rLTigaTitikDelapanPemeriksaanId === "Tidak Ada Data" &&
-                        <div className="control">
+                    {rLTigaTitikDelapanPemeriksaanId === "Tidak Ada Data" && (
+                      <div className="control">
                         <input
                           type="number"
                           name="jumlahLaki"
@@ -311,10 +344,8 @@ export const FormEditRL38 = () => {
                           disabled={true}
                         />
                       </div>
-                      
-                    }
-                    { rLTigaTitikDelapanPemeriksaanId !== "Tidak Ada Data" &&
-                      
+                    )}
+                    {rLTigaTitikDelapanPemeriksaanId !== "Tidak Ada Data" && (
                       <div className="control">
                         <input
                           type="number"
@@ -329,12 +360,11 @@ export const FormEditRL38 = () => {
                           onKeyPress={preventMinus}
                         />
                       </div>
-                      
-                    } 
+                    )}
                   </td>
                   <td>
-                    {rLTigaTitikDelapanPemeriksaanId === "Tidak Ada Data" &&
-                        <div className="control">
+                    {rLTigaTitikDelapanPemeriksaanId === "Tidak Ada Data" && (
+                      <div className="control">
                         <input
                           type="number"
                           name="jumlahPerempuan"
@@ -349,10 +379,8 @@ export const FormEditRL38 = () => {
                           disabled={true}
                         />
                       </div>
-                      
-                    }
-                    { rLTigaTitikDelapanPemeriksaanId !== "Tidak Ada Data" &&
-                      
+                    )}
+                    {rLTigaTitikDelapanPemeriksaanId !== "Tidak Ada Data" && (
                       <div className="control">
                         <input
                           type="number"
@@ -367,12 +395,11 @@ export const FormEditRL38 = () => {
                           onKeyPress={preventMinus}
                         />
                       </div>
-                      
-                    } 
+                    )}
                   </td>
                   <td>
-                    {rLTigaTitikDelapanPemeriksaanId === "Tidak Ada Data" &&
-                        <div className="control">
+                    {rLTigaTitikDelapanPemeriksaanId === "Tidak Ada Data" && (
+                      <div className="control">
                         <input
                           type="number"
                           name="rataLaki"
@@ -387,10 +414,8 @@ export const FormEditRL38 = () => {
                           disabled={true}
                         />
                       </div>
-                      
-                    }
-                    { rLTigaTitikDelapanPemeriksaanId !== "Tidak Ada Data" &&
-                      
+                    )}
+                    {rLTigaTitikDelapanPemeriksaanId !== "Tidak Ada Data" && (
                       <div className="control">
                         <input
                           type="number"
@@ -405,12 +430,11 @@ export const FormEditRL38 = () => {
                           onKeyPress={preventMinus}
                         />
                       </div>
-                      
-                    } 
+                    )}
                   </td>
                   <td>
-                    {rLTigaTitikDelapanPemeriksaanId === "Tidak Ada Data" &&
-                        <div className="control">
+                    {rLTigaTitikDelapanPemeriksaanId === "Tidak Ada Data" && (
+                      <div className="control">
                         <input
                           type="number"
                           name="rataPerempuan"
@@ -425,10 +449,8 @@ export const FormEditRL38 = () => {
                           disabled={true}
                         />
                       </div>
-                      
-                    }
-                    { rLTigaTitikDelapanPemeriksaanId !== "Tidak Ada Data" &&
-                      
+                    )}
+                    {rLTigaTitikDelapanPemeriksaanId !== "Tidak Ada Data" && (
                       <div className="control">
                         <input
                           type="number"
@@ -443,8 +465,7 @@ export const FormEditRL38 = () => {
                           onKeyPress={preventMinus}
                         />
                       </div>
-                      
-                    } 
+                    )}
                   </td>
                 </tr>
               </tbody>
@@ -453,7 +474,11 @@ export const FormEditRL38 = () => {
         </div>
         <div className="mt-3 mb-3">
           <ToastContainer />
-          <button type="submit" className="btn btn-outline-success" disabled={buttonStatus}>
+          <button
+            type="submit"
+            className="btn btn-outline-success"
+            disabled={buttonStatus}
+          >
             <HiSaveAs /> Simpan
           </button>
         </div>

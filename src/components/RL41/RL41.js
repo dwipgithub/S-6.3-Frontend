@@ -10,7 +10,8 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Table from "react-bootstrap/Table";
 import { Modal } from "react-bootstrap";
-import { DownloadTableExcel } from "react-export-table-to-excel"
+import { DownloadTableExcel } from "react-export-table-to-excel";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const RL41 = () => {
   // const [namaRS, setNamaRS] = useState("");
@@ -36,6 +37,7 @@ const RL41 = () => {
   const [user, setUser] = useState({});
   const tableRef = useRef(null);
   const [namafile, setNamaFile] = useState("");
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -51,7 +53,12 @@ const RL41 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       showRumahSakit(decoded.satKerId);
@@ -71,7 +78,12 @@ const RL41 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -171,7 +183,7 @@ const RL41 = () => {
         },
       });
       setDaftarRumahSakit(response.data.data);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const showRumahSakit = async (id) => {
@@ -183,9 +195,8 @@ const RL41 = () => {
       });
 
       setRumahSakit(response.data.data);
-    } catch (error) { }
+    } catch (error) {}
   };
-
 
   const getRL = async (e) => {
     e.preventDefault();
@@ -229,7 +240,11 @@ const RL41 = () => {
       // });
 
       setDataRL(rlEmpatDetails);
-      setNamaFile("rl41_" + rumahSakit.id + "_".concat(String(tahun).concat("-").concat(bulan).concat("-01")));
+      setNamaFile(
+        "rl41_" +
+          rumahSakit.id +
+          "_".concat(String(tahun).concat("-").concat(bulan).concat("-01"))
+      );
       setRumahSakit(null);
       handleClose();
       setSpinner(false);
@@ -321,17 +336,14 @@ const RL41 = () => {
   // };
 
   const deleteDetailRL = async (id) => {
-
     try {
       const customConfig = {
         headers: {
           Authorization: `Bearer ${token}`,
+          "XSRF-TOKEN": CSRFToken,
         },
       };
-      await axiosJWT.delete(
-        "/apisirs6v2/rlempattitiksatu/" + id,
-        customConfig
-      );
+      await axiosJWT.delete("/apisirs6v2/rlempattitiksatu/" + id, customConfig);
       setDataRL((current) => current.filter((value) => value.id !== id));
       toast("Data Berhasil Dihapus", {
         position: toast.POSITION.TOP_RIGHT,
@@ -363,7 +375,10 @@ const RL41 = () => {
   };
 
   return (
-    <div className="container" style={{ marginTop: "70px",marginBottom: "70px" }}>
+    <div
+      className="container"
+      style={{ marginTop: "70px", marginBottom: "70px" }}
+    >
       <Modal show={show} onHide={handleClose} style={{ position: "fixed" }}>
         <Modal.Header closeButton>
           <Modal.Title>Filter</Modal.Title>
@@ -587,7 +602,10 @@ const RL41 = () => {
       </Modal>
       <div className="row">
         <div className="col-md-12">
-        <span style={{ color: "gray" }}> <h4>RL 4.1 -  Morbiditas Pasien Rawat Inap</h4></span>
+          <span style={{ color: "gray" }}>
+            {" "}
+            <h4>RL 4.1 - Morbiditas Pasien Rawat Inap</h4>
+          </span>
           <div style={{ marginBottom: "10px" }}>
             {user.jenisUserId === 4 ? (
               <Link
@@ -622,49 +640,63 @@ const RL41 = () => {
               currentTableRef={tableRef.current}
             >
               {/* <button> Export excel </button> */}
-              <button className='btn' style={{ fontSize: "18px", marginLeft: "5px", backgroundColor: "#779D9E", color: "#FFFFFF" }} > Download
+              <button
+                className="btn"
+                style={{
+                  fontSize: "18px",
+                  marginLeft: "5px",
+                  backgroundColor: "#779D9E",
+                  color: "#FFFFFF",
+                }}
+              >
+                {" "}
+                Download
               </button>
             </DownloadTableExcel>
-            </div>
+          </div>
         </div>
         <div>
           <h5 style={{ fontSize: "14px" }}>
             {filterLabel
               .map((value) => {
-                return  "filtered by"+ value;
+                return "filtered by" + value;
               })
               .join(", ")}
           </h5>
         </div>
-        <div className={style['table-container']}>
-          <table className={style['table']} ref={tableRef}>
-            <thead className={style['thead']}>
+        <div className={style["table-container"]}>
+          <table className={style["table"]} ref={tableRef}>
+            <thead className={style["thead"]}>
               <tr className="main-header-row">
-                <th 
+                <th
                   rowSpan={3}
                   style={{ width: "1%", verticalAlign: "middle" }}
-                  className={style['sticky-header-view']}
+                  className={style["sticky-header-view"]}
                 >
                   No.
                 </th>
                 <th
                   rowSpan={3}
                   style={{ width: "3%", verticalAlign: "middle" }}
-                  className={style['sticky-header-view']}
+                  className={style["sticky-header-view"]}
                 >
                   Aksi
                 </th>
                 <th
-                className={style['sticky-header-view']}
+                  className={style["sticky-header-view"]}
                   rowSpan={3}
                   style={{ textAlign: "center", verticalAlign: "middle" }}
                 >
                   Kode ICD-10
                 </th>
                 <th
-                className={style['sticky-header-view']}
+                  className={style["sticky-header-view"]}
                   rowSpan={3}
-                  style={{ width: "5.5%", textAlign: "left", verticalAlign: "middle" }}
+                  style={{
+                    width: "5.5%",
+                    textAlign: "left",
+                    verticalAlign: "middle",
+                  }}
                 >
                   Diagnosis Penyakit
                 </th>
@@ -687,7 +719,7 @@ const RL41 = () => {
                   Jumlah Pasien Keluar Mati
                 </th>
               </tr>
-              <tr className={style['subheader-row']}>
+              <tr className={style["subheader-row"]}>
                 <th colSpan={2} style={{ textAlign: "center" }}>
                   {" "}
                   &lt; 1 Jam{" "}
@@ -766,7 +798,7 @@ const RL41 = () => {
                   ≥ 85 Tahun{" "}
                 </th>
               </tr>
-              <tr className={style['subsubheader-row']}>
+              <tr className={style["subsubheader-row"]}>
                 <th style={{ textAlign: "center" }}>Laki-Laki</th>
                 <th style={{ textAlign: "center" }}>Perempuan</th>
                 <th style={{ textAlign: "center" }}>Laki-Laki</th>
@@ -829,12 +861,24 @@ const RL41 = () => {
               {dataRL.map((value, index) => {
                 return (
                   <tr style={{ verticalAlign: "center" }} key={value.id}>
-                    <td  className={style['sticky-column-view']} style={{ textAlign: "center" }}>
+                    <td
+                      className={style["sticky-column-view"]}
+                      style={{ textAlign: "center" }}
+                    >
                       <label>{index + 1}</label>
                     </td>
-                    <td className={style['sticky-column-view']} style={{ textAlign: "center", verticalAlign: "middle" }}>
+                    <td
+                      className={style["sticky-column-view"]}
+                      style={{ textAlign: "center", verticalAlign: "middle" }}
+                    >
                       <ToastContainer />
-                      <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          width: "100%",
+                        }}
+                      >
                         <button
                           className="btn btn-danger"
                           style={{
@@ -861,180 +905,74 @@ const RL41 = () => {
                         </Link>
                       </div>
                     </td>
-                    <td className={style['sticky-column-view']} style={{ textAlign: "center" }}>
+                    <td
+                      className={style["sticky-column-view"]}
+                      style={{ textAlign: "center" }}
+                    >
                       <label>{value.icd.icd_code}</label>
                     </td>
-                    <td  className={style['sticky-column-view']} style={{ textAlign: "left" }}>
+                    <td
+                      className={style["sticky-column-view"]}
+                      style={{ textAlign: "left" }}
+                    >
                       <label>{value.icd.description_code}</label>
                     </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_0_1jam_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_0_1jam_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_1_23jam_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_1_23jam_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_1_7hr_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_1_7hr_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_8_28hr_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_8_28hr_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_29hr_3bln_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_29hr_3bln_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_3_6bln_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_3_6bln_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_6_11bln_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_6_11bln_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_1_4th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_1_4th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_5_9th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_5_9th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_10_14th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_10_14th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_15_19th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_15_19th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_20_24th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_20_24th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_25_29th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_25_29th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_30_34th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_30_34th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_35_39th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_35_39th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_40_44th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_40_44th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_45_49th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_45_49th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_50_54th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_50_54th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_55_59th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_55_59th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_60_64th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_60_64th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_65_69th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_65_69th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_70_74th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_70_74th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_75_79th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_75_79th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_80_84th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_80_84th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_lebih85th_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_umur_gen_lebih85th_p}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_gen_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_hidup_mati_gen_p}
-                    </td>
-                    <td>
-                      {value.total_pas_hidup_mati}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_keluar_mati_gen_l}
-                    </td>
-                    <td>
-                      {value.jmlh_pas_keluar_mati_gen_p}
-                    </td>
-                    <td>
-                      {value.total_pas_keluar_mati}
-                    </td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_0_1jam_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_0_1jam_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_1_23jam_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_1_23jam_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_1_7hr_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_1_7hr_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_8_28hr_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_8_28hr_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_29hr_3bln_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_29hr_3bln_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_3_6bln_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_3_6bln_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_6_11bln_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_6_11bln_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_1_4th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_1_4th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_5_9th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_5_9th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_10_14th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_10_14th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_15_19th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_15_19th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_20_24th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_20_24th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_25_29th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_25_29th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_30_34th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_30_34th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_35_39th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_35_39th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_40_44th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_40_44th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_45_49th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_45_49th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_50_54th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_50_54th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_55_59th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_55_59th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_60_64th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_60_64th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_65_69th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_65_69th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_70_74th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_70_74th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_75_79th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_75_79th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_80_84th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_80_84th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_lebih85th_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_umur_gen_lebih85th_p}</td>
+                    <td>{value.jmlh_pas_hidup_mati_gen_l}</td>
+                    <td>{value.jmlh_pas_hidup_mati_gen_p}</td>
+                    <td>{value.total_pas_hidup_mati}</td>
+                    <td>{value.jmlh_pas_keluar_mati_gen_l}</td>
+                    <td>{value.jmlh_pas_keluar_mati_gen_p}</td>
+                    <td>{value.total_pas_keluar_mati}</td>
                   </tr>
                 );
               })}

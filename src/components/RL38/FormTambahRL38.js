@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
@@ -9,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoArrowBack } from "react-icons/io5";
 import Table from "react-bootstrap/esm/Table";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const FormTambahRL38 = () => {
   const [tahun, setTahun] = useState("2025");
@@ -22,6 +22,7 @@ const FormTambahRL38 = () => {
   const [expire, setExpire] = useState("");
   const navigate = useNavigate();
   const [buttonStatus, setButtonStatus] = useState(false);
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -33,7 +34,12 @@ const FormTambahRL38 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -50,7 +56,12 @@ const FormTambahRL38 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -87,16 +98,16 @@ const FormTambahRL38 = () => {
           },
         }
       );
-      
-      
 
       let rlTemplate = response.data.data.map((value, index) => {
-        try{
+        try {
           return {
             id: value.id,
             rLTigaTitikDelapanPemeriksaan: value.nama,
-            rLTigaTitikDelapanGroupNo: value.rl_tiga_titik_delapan_group_pemeriksaan.no,
-            rLTigaTitikDelapanGroupNama: value.rl_tiga_titik_delapan_group_pemeriksaan.nama,
+            rLTigaTitikDelapanGroupNo:
+              value.rl_tiga_titik_delapan_group_pemeriksaan.no,
+            rLTigaTitikDelapanGroupNama:
+              value.rl_tiga_titik_delapan_group_pemeriksaan.nama,
             no: value.no,
             jumlahLaki: 0,
             jumlahPerempuan: 0,
@@ -106,11 +117,11 @@ const FormTambahRL38 = () => {
             checked: false,
           };
         } catch (error) {
-          console.error('Error map ${index}: ', error);
-          return null; 
-        }
-      });
-  
+          console.error("Error map ${index}: ", error);
+          return null;
+        }
+      });
+
       setDataRL(rlTemplate);
     } catch (error) {}
   };
@@ -191,15 +202,17 @@ const FormTambahRL38 = () => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "XSRF-TOKEN": CSRFToken,
         },
       };
 
-      if( bulan==='00' || bulan == 0 ){
+      const response = await axios.get("/apisirs6v2/token", customConfig);
+      if (bulan === "00" || bulan == 0) {
         toast(`Data tidak bisa disimpan karena belum pilih periode laporan`, {
           position: toast.POSITION.TOP_RIGHT,
         });
         setButtonStatus(false);
-      }else{
+      } else {
         const result = await axiosJWT.post(
           "/apisirs6v2/rltigatitikdelapan",
           {
@@ -217,8 +230,6 @@ const FormTambahRL38 = () => {
           navigate("/rl38");
         }, 1000);
       }
-      
-      
     } catch (error) {
       toast(`Data tidak bisa disimpan karena ,${error.response.data.message}`, {
         position: toast.POSITION.TOP_RIGHT,
@@ -252,7 +263,10 @@ const FormTambahRL38 = () => {
   };
 
   return (
-    <div className="container" style={{ marginTop: "70px" , marginBottom:"100px"}}>
+    <div
+      className="container"
+      style={{ marginTop: "70px", marginBottom: "100px" }}
+    >
       <form onSubmit={Simpan}>
         <div className="row">
           <div className="col-md-6">
@@ -343,7 +357,8 @@ const FormTambahRL38 = () => {
                     className="form-control"
                     id="bulan"
                     onChange={(e) => changeHandlerSingle(e)}
-                  ><option value="00">--PILIH BULAN--</option>
+                  >
+                    <option value="00">--PILIH BULAN--</option>
                     <option value="01">Januari</option>
                     <option value="02">Februari</option>
                     <option value="03">Maret</option>
@@ -381,35 +396,50 @@ const FormTambahRL38 = () => {
               &lt;
             </Link>
             <span style={{ color: "gray" }}>Kembali RL 3.8 Laboratorium</span>
-            <div className={style['table-container']}>
-                        <table
-                            responsive
-                            className={style['table']}>
-                        
-                            <thead className={style['thead']}>
-                <tr className="main-header-row">
-                  <th  rowSpan={2} style={{ width: "4%", verticalAlign:"middle" }}>No.</th>
-                  <th  rowSpan={2} style={{ width: "3%" }}></th>
-                  <th  rowSpan={2} style={{ width: "50%",textAlign: "center" , verticalAlign:"middle" }}>Jenis Pemeriksaan</th>
-                  <th  colSpan={2} style={{ textAlign: "center" }}>Jumlah Pemeriksaan</th>
-                  <th  colSpan={2} style={{ textAlign: "center" }}>Rata-Rata Pemeriksaan</th>
-                </tr>
-                <tr className={style['subheader-row']}>
-                  <th  style={{ textAlign: "center" }}>Laki-Laki</th>
-                  <th  style={{ textAlign: "center" }}>Perempuan</th>
-                  <th  style={{ textAlign: "center" }}>Laki-Laki</th>
-                  <th  style={{ textAlign: "center" }}>Perempuan</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataRL.map((value, index) => {
-                  let disabled = true
-                  let visibled = true
-                  if (value.no == 0) {
-                    value.disabledInput = true
-                    disabled = false
-                    visibled = "block"
-                }
+            <div className={style["table-container"]}>
+              <table responsive className={style["table"]}>
+                <thead className={style["thead"]}>
+                  <tr className="main-header-row">
+                    <th
+                      rowSpan={2}
+                      style={{ width: "4%", verticalAlign: "middle" }}
+                    >
+                      No.
+                    </th>
+                    <th rowSpan={2} style={{ width: "3%" }}></th>
+                    <th
+                      rowSpan={2}
+                      style={{
+                        width: "50%",
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      Jenis Pemeriksaan
+                    </th>
+                    <th colSpan={2} style={{ textAlign: "center" }}>
+                      Jumlah Pemeriksaan
+                    </th>
+                    <th colSpan={2} style={{ textAlign: "center" }}>
+                      Rata-Rata Pemeriksaan
+                    </th>
+                  </tr>
+                  <tr className={style["subheader-row"]}>
+                    <th style={{ textAlign: "center" }}>Laki-Laki</th>
+                    <th style={{ textAlign: "center" }}>Perempuan</th>
+                    <th style={{ textAlign: "center" }}>Laki-Laki</th>
+                    <th style={{ textAlign: "center" }}>Perempuan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataRL.map((value, index) => {
+                    let disabled = true;
+                    let visibled = true;
+                    if (value.no == 0) {
+                      value.disabledInput = true;
+                      disabled = false;
+                      visibled = "block";
+                    }
                     return (
                       <tr key={value.id}>
                         <td>{value.no}</td>
@@ -427,7 +457,11 @@ const FormTambahRL38 = () => {
                             checked={value.checked}
                           />
                         </td>
-                        <td>{value.rLTigaTitikDelapanGroupNama+" "+value.rLTigaTitikDelapanPemeriksaan}</td>
+                        <td>
+                          {value.rLTigaTitikDelapanGroupNama +
+                            " " +
+                            value.rLTigaTitikDelapanPemeriksaan}
+                        </td>
                         <td>
                           <input
                             type="number"
@@ -494,10 +528,10 @@ const FormTambahRL38 = () => {
                         </td>
                       </tr>
                     );
-                })}
-              </tbody>
+                  })}
+                </tbody>
               </table>
-            {/* </Table> */}
+              {/* </Table> */}
             </div>
           </div>
         </div>
