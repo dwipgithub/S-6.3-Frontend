@@ -8,6 +8,7 @@ import { IoArrowBack } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 export const FormUbahRL314 = () => {
   const [namaRS, setNamaRS] = useState("");
@@ -22,6 +23,7 @@ export const FormUbahRL314 = () => {
   const navigate = useNavigate();
   const [No, setNo] = useState("");
   const { id } = useParams();
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -30,7 +32,12 @@ export const FormUbahRL314 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -47,7 +54,12 @@ export const FormUbahRL314 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -62,19 +74,17 @@ export const FormUbahRL314 = () => {
 
   const getRumahSakit = async (id) => {
     try {
-        const response = await axiosJWT.get('/apisirs6v2/rumahsakit/' + id, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        setNamaRS(response.data.data.nama)
-        setAlamatRS(response.data.data.alamat)
-        setNamaPropinsi(response.data.data.provinsi_nama)
-        setNamaKabKota(response.data.data.kab_kota_nama)
-    } catch (error) {
-
-    }
-}
+      const response = await axiosJWT.get("/apisirs6v2/rumahsakit/" + id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setNamaRS(response.data.data.nama);
+      setAlamatRS(response.data.data.alamat);
+      setNamaPropinsi(response.data.data.provinsi_nama);
+      setNamaKabKota(response.data.data.kab_kota_nama);
+    } catch (error) {}
+  };
 
   const getDataRLTigaTitikEmpatBelasDetailById = async (id) => {
     try {
@@ -123,6 +133,7 @@ export const FormUbahRL314 = () => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "XSRF-TOKEN": CSRFToken,
         },
       };
 
@@ -269,7 +280,7 @@ export const FormUbahRL314 = () => {
                     type="number"
                     name="jumlah"
                     className="form-control"
-                    min="0" 
+                    min="0"
                     maxLength={7}
                     onInput={(e) => maxLengthCheck(e)}
                     onPaste={preventPasteNegative}

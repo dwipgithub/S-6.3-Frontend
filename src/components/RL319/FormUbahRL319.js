@@ -7,6 +7,7 @@ import { HiSaveAs } from "react-icons/hi";
 // import Table from "react-bootstrap/Table";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 export const FormUbahRL319 = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ export const FormUbahRL319 = () => {
   const [dataParentRL, setDataParentRL] = useState([]);
   const [parentId, setParentId] = useState("");
   const { id } = useParams();
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -40,7 +42,12 @@ export const FormUbahRL319 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -57,7 +64,12 @@ export const FormUbahRL319 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -93,6 +105,7 @@ export const FormUbahRL319 = () => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "XSRF-TOKEN": CSRFToken,
         },
       };
 

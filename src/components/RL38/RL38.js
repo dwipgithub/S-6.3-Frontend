@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { confirmAlert } from "react-confirm-alert";
 import { Modal, Table } from "react-bootstrap";
 import { DownloadTableExcel } from "react-export-table-to-excel";
-
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const RL38 = () => {
   const [tahun, setTahun] = useState("2025");
@@ -23,6 +23,7 @@ const RL38 = () => {
   const [expire, setExpire] = useState("");
   const [spinner, setSpinner] = useState(false);
   const navigate = useNavigate();
+  const { CSRFToken } = useCSRFTokenContext();
 
   //baru
   const [filterLabel, setFilterLabel] = useState([]);
@@ -50,7 +51,12 @@ const RL38 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       showRumahSakit(decoded.satKerId);
@@ -70,7 +76,12 @@ const RL38 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -404,8 +415,11 @@ const RL38 = () => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "XSRF-TOKEN": CSRFToken,
       },
     };
+
+    const response = await axios.get("/apisirs6v2/token", customConfig);
     try {
       await axiosJWT.delete(
         `/apisirs6v2/rltigatitikdelapan/${id}`,
@@ -441,7 +455,10 @@ const RL38 = () => {
     });
   };
   return (
-    <div className="container" style={{ marginTop: "70px" , marginBottom: "100px"}}>
+    <div
+      className="container"
+      style={{ marginTop: "70px", marginBottom: "100px" }}
+    >
       <Modal show={show} onHide={handleClose} style={{ position: "fixed" }}>
         <Modal.Header closeButton>
           <Modal.Title>Filter</Modal.Title>
@@ -720,17 +737,16 @@ const RL38 = () => {
         </div>
         <div>
           <h5 style={{ fontSize: "14px" }}>
-         
             {filterLabel
               .map((value) => {
-                return   "filtered by"+ value;
+                return "filtered by" + value;
               })
               .join(", ")}
           </h5>
         </div>
-        <div className={style['table-container']}>
-        <table className={style['table']} ref={tableRef}>
-            <thead className={style['thead']}>
+        <div className={style["table-container"]}>
+          <table className={style["table"]} ref={tableRef}>
+            <thead className={style["thead"]}>
               <tr className="main-header-row">
                 <th
                   rowSpan={2}
@@ -746,7 +762,11 @@ const RL38 = () => {
                 </th>
                 <th
                   rowSpan={2}
-                  style={{ width: "30%", textAlign: "center", verticalAlign: "middle" }}
+                  style={{
+                    width: "30%",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                  }}
                 >
                   Jenis Pemeriksaan
                 </th>
@@ -757,7 +777,7 @@ const RL38 = () => {
                   Rata-Rata Pemeriksaan
                 </th>
               </tr>
-              <tr className={style['subheader-row']}>
+              <tr className={style["subheader-row"]}>
                 <th style={{ textAlign: "center" }}>Laki-Laki</th>
                 <th style={{ textAlign: "center" }}>Perempuan</th>
                 <th style={{ textAlign: "center" }}>Laki-Laki</th>
@@ -818,7 +838,13 @@ const RL38 = () => {
                                 <td>
                                   <ToastContainer />
                                   {user.jenisUserId === 4 ? (
-                                    <div style={{ display: "flex" ,  alignItems: "center", width: "100%" }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        width: "100%",
+                                      }}
+                                    >
                                       <button
                                         className="btn btn-danger"
                                         style={{
@@ -841,7 +867,8 @@ const RL38 = () => {
                                           margin: "0 5px 0 0",
                                           backgroundColor: "#CFD35E",
                                           border: "1px solid #CFD35E",
-                                          color: "#FFFFFF", flex: "1",
+                                          color: "#FFFFFF",
+                                          flex: "1",
                                         }}
                                       >
                                         Ubah

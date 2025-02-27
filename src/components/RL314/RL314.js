@@ -17,11 +17,12 @@ import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import { Spinner, Modal } from "react-bootstrap";
 import { downloadExcel } from "react-export-table-to-excel";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const RL314 = () => {
   const [bulan, setBulan] = useState(1);
   const [tahun, setTahun] = useState("");
-  const [daftarBulan, setDaftarBulan] = useState([])
+  const [daftarBulan, setDaftarBulan] = useState([]);
   const [total, setTotal] = useState("");
   const [namaRS, setNamaRS] = useState("");
   const [alamatRS, setAlamatRS] = useState("");
@@ -33,8 +34,8 @@ const RL314 = () => {
   const [expire, setExpire] = useState("");
   const navigate = useNavigate();
   const [spinner, setSpinner] = useState(false);
+  const { CSRFToken } = useCSRFTokenContext();
 
-  
   //baru
   const [filterLabel, setFilterLabel] = useState([]);
   const [rumahSakit, setRumahSakit] = useState("");
@@ -49,7 +50,7 @@ const RL314 = () => {
     getBulan();
     const getLastYear = async () => {
       const date = new Date();
-      setTahun('2025');
+      setTahun("2025");
       return date.getFullYear();
     };
     getLastYear().then((results) => {});
@@ -59,7 +60,12 @@ const RL314 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       showRumahSakit(decoded.satKerId);
@@ -75,12 +81,7 @@ const RL314 = () => {
   };
 
   function handleDownloadExcel() {
-    const header = [
-      "No",
-      "No Kegiatan",
-      "Jenis Kegiatan",
-      "Jumlah",
-    ];
+    const header = ["No", "No Kegiatan", "Jenis Kegiatan", "Jumlah"];
 
     const body = dataRL.map((value, index) => {
       const data = [
@@ -108,7 +109,12 @@ const RL314 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -122,62 +128,62 @@ const RL314 = () => {
   );
 
   const getBulan = async () => {
-    const results = []
+    const results = [];
     results.push({
-        key: "Januari",
-        value: "1",
-    })
+      key: "Januari",
+      value: "1",
+    });
     results.push({
-        key: "Febuari",
-        value: "2",
-    })
+      key: "Febuari",
+      value: "2",
+    });
     results.push({
-        key: "Maret",
-        value: "3",
-    })
+      key: "Maret",
+      value: "3",
+    });
     results.push({
-        key: "April",
-        value: "4",
-    })
+      key: "April",
+      value: "4",
+    });
     results.push({
-        key: "Mei",
-        value: "5",
-    })
+      key: "Mei",
+      value: "5",
+    });
     results.push({
-        key: "Juni",
-        value: "6",
-    })
+      key: "Juni",
+      value: "6",
+    });
     results.push({
-        key: "Juli",
-        value: "7",
-    })
+      key: "Juli",
+      value: "7",
+    });
     results.push({
-        key: "Agustus",
-        value: "8",
-    })
+      key: "Agustus",
+      value: "8",
+    });
     results.push({
-        key: "September",
-        value: "9",
-    })
+      key: "September",
+      value: "9",
+    });
     results.push({
-        key: "Oktober",
-        value: "10",
-    })
+      key: "Oktober",
+      value: "10",
+    });
     results.push({
-        key: "November",
-        value: "11",
-    })
+      key: "November",
+      value: "11",
+    });
     results.push({
-        key: "Desember",
-        value: "12",
-    })
+      key: "Desember",
+      value: "12",
+    });
 
-    setDaftarBulan([...results])
-};
+    setDaftarBulan([...results]);
+  };
 
   const bulanChangeHandler = async (e) => {
-    setBulan(e.target.value)
-};
+    setBulan(e.target.value);
+  };
 
   const tahunChangeHandler = (event) => {
     setTahun(event.target.value);
@@ -224,7 +230,7 @@ const RL314 = () => {
     } catch (error) {}
   };
   const getRL = async (e) => {
-    let date = (tahun+'-'+bulan+'-01')
+    let date = tahun + "-" + bulan + "-01";
     e.preventDefault();
     if (rumahSakit == null) {
       toast(`rumah sakit harus dipilih`, {
@@ -244,7 +250,7 @@ const RL314 = () => {
         },
         params: {
           rsId: rumahSakit.id,
-          tahun: date
+          tahun: date,
         },
       };
       const results = await axiosJWT.get(
@@ -277,14 +283,13 @@ const RL314 = () => {
           0
         );
 
-        setTotal (rlTigaTitikEmpatBelasDetails
-        .reduce(
+      setTotal(
+        rlTigaTitikEmpatBelasDetails.reduce(
           (acc, rlTigaTitikEmpatBelasDetails) =>
             acc + rlTigaTitikEmpatBelasDetails.jumlah,
           0
-        ))
-
-
+        )
+      );
 
       const below15Above16 = [];
       const restOfData = [];
@@ -326,96 +331,6 @@ const RL314 = () => {
       console.log(error);
     }
   };
-
-  // const changeHandlerSingle = (event) => {
-  //   setTahun(event.target.value);
-  // };
-
-  // const Cari = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const customConfig = {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       params: {
-  //         tahun: tahun,
-  //       },
-  //     };
-  //     const results = await axiosJWT.get(
-  //       "/apisirs6v2/rltigatitikempatbelas",
-  //       customConfig
-  //     );
-
-  //     const rlTigaTitikEmpatBelasDetails = results.data.data.map((value) => {
-  //       return {
-  //         id: value.id,
-  //         jenisKegiatanRLTigaTitikEmpatBelasId:
-  //           value.rl_tiga_titik_empat_belas_jenis_kegiatan.id,
-  //         no: value.rl_tiga_titik_empat_belas_jenis_kegiatan.no,
-  //         namaJenisKegiatan:
-  //           value.rl_tiga_titik_empat_belas_jenis_kegiatan.nama,
-  //         jumlah: value.jumlah,
-  //       };
-  //     });
-  //     const total16 = rlTigaTitikEmpatBelasDetails
-  //       .filter(
-  //         (rlTigaTitikEmpatBelasDetails) =>
-  //           rlTigaTitikEmpatBelasDetails.jenisKegiatanRLTigaTitikEmpatBelasId >
-  //             15 &&
-  //           rlTigaTitikEmpatBelasDetails.jenisKegiatanRLTigaTitikEmpatBelasId <
-  //             21
-  //       )
-  //       .reduce(
-  //         (acc, rlTigaTitikEmpatBelasDetails) =>
-  //           acc + rlTigaTitikEmpatBelasDetails.jumlah,
-  //         0
-  //       );
-
-  //       setTotal (rlTigaTitikEmpatBelasDetails
-  //       .reduce(
-  //         (acc, rlTigaTitikEmpatBelasDetails) =>
-  //           acc + rlTigaTitikEmpatBelasDetails.jumlah,
-  //         0
-  //       ))
-
-
-
-  //     const below15Above16 = [];
-  //     const restOfData = [];
-
-  //     if (total16 > 0) {
-  //       const newObj = {
-  //         id: null,
-  //         jenisKegiatanRLTigaTitikEmpatBelasId: null,
-  //         no: "16",
-  //         namaJenisKegiatan: "Kunjungan Rumah (Homecare)",
-  //         jumlah: total16,
-  //       };
-
-  //       rlTigaTitikEmpatBelasDetails.forEach((item) => {
-  //         if (
-  //           parseInt(item.jenisKegiatanRLTigaTitikEmpatBelasId) < 15 ||
-  //           parseInt(item.jenisKegiatanRLTigaTitikEmpatBelasId > 16)
-  //         ) {
-  //           below15Above16.push(item);
-  //         } else {
-  //           restOfData.push(item);
-  //         }
-  //       });
-
-  //       below15Above16.push(newObj);
-
-  //       const newData = [...below15Above16, ...restOfData];
-  //       setDataRL(newData);
-  //     } else {
-  //       setDataRL(rlTigaTitikEmpatBelasDetails);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const handleClose = () => setShow(false);
 
@@ -490,6 +405,7 @@ const RL314 = () => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "XSRF-TOKEN": CSRFToken,
       },
     };
     try {
@@ -498,7 +414,7 @@ const RL314 = () => {
         customConfig
       );
       setDataRL((current) => current.filter((value) => value.id !== id));
-    // window.location.reload(false);
+      // window.location.reload(false);
       toast("Data Berhasil Dihapus", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -703,26 +619,29 @@ const RL314 = () => {
               <></>
             )}
 
-                  <div className="form-floating" style={{ width: "70%", display: "inline-block" }}>
-                                <select
-                                    typeof="select"
-                                    className="form-control"
-                                    onChange={bulanChangeHandler}
-                                >
-                                    {daftarBulan.map((bulan) => {
-                                        return (
-                                            <option
-                                                key={bulan.value}
-                                                name={bulan.key}
-                                                value={bulan.value}
-                                            >
-                                                {bulan.key}
-                                            </option>
-                                        );
-                                    })}
-                                </select>
-                                <label>Bulan</label>
-                            </div>
+            <div
+              className="form-floating"
+              style={{ width: "70%", display: "inline-block" }}
+            >
+              <select
+                typeof="select"
+                className="form-control"
+                onChange={bulanChangeHandler}
+              >
+                {daftarBulan.map((bulan) => {
+                  return (
+                    <option
+                      key={bulan.value}
+                      name={bulan.key}
+                      value={bulan.value}
+                    >
+                      {bulan.key}
+                    </option>
+                  );
+                })}
+              </select>
+              <label>Bulan</label>
+            </div>
 
             <div
               className="form-floating"
@@ -753,7 +672,7 @@ const RL314 = () => {
       </Modal>
       <div className="row">
         <div className="col-md-12">
-        <div style={{ marginBottom: "10px" }}>
+          <div style={{ marginBottom: "10px" }}>
             {user.jenisUserId === 4 ? (
               <Link
                 className="btn"
@@ -796,111 +715,113 @@ const RL314 = () => {
           </div>
         </div>
         <div>
-                        <h5 style={{fontSize: "14px"}}>
-                            {
-                                filterLabel.length > 0 ? (
-                                    <>
-                                        filtered by {filterLabel.map((value) => {
-                                            return(
-                                                value
-                                            )
-                                        }).join(', ')}
-                                    </>
-                                ) : (
-                                    <></>
-                                )
-                            }
-                        </h5>
-                    </div>
-      </div>
-          <Table className={style.rlTable}>
-            <thead>
-              <tr>
-                <th style={{ width: "5%" }}>Nomor Kegiatan</th>
-                <th style={{ width: "5%" }}>Aksi</th>
-                <th style={{ width: "30%" }}>Jenis Kegiatan</th>
-                <th>Jumlah</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataRL.map((value, index) => {
-                return value.no === "16" ? (
-                  <tr  style={{
-                    textAlign: "center",
-                    backgroundColor: "#90C8AC",
-                  }} key={value.jenisKegiatanRLTigaTitikEmpatBelasId}>
-                    
-                    <td
-                      style={{ textAlign: "left", verticalAlign: "middle" }}
-                    >
-                      {value.no}
-                    </td>
-                    <td colSpan={2}>{value.namaJenisKegiatan} <br /> (Hasil Penjumlahan dari Nomor Kegiatan 16.1, 16.2, 16.3, 16.4, 16.5)</td>
-                    <td>{value.jumlah}</td>
-                  </tr>
-                ) : (
-                  <tr key={value.jenisKegiatanRLTigaTitikEmpatBelasId}>
-                    
-                    <td
-                      style={{ textAlign: "center", verticalAlign: "middle" }}
-                    >
-                      {value.no}
-                    </td>
-                    
-                    <td
-                      style={{ textAlign: "left", verticalAlign: "middle" }}
-                    >
-                      <ToastContainer />
-                      <div style={{ display: "flex" }}>
-                        <button
-                          className="btn btn-danger"
-                          style={{
-                            margin: "0 5px 0 0",
-                            backgroundColor: "#FF6663",
-                            border: "1px solid #FF6663",
-                          }}
-                          type="button"
-                          onClick={(e) => hapus(value.id)}
-                        >
-                          Hapus
-                        </button>
-                        {value.no != 0 ? (
-                        <Link
-                          to={`/rl314/ubah/${value.id}`}
-                          className="btn btn-warning"
-                          style={{
-                            margin: "0 5px 0 0",
-                            backgroundColor: "#CFD35E",
-                            border: "1px solid #CFD35E",
-                            color: "#FFFFFF",
-                          }}
-                        >
-                          Ubah
-                        </Link>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </td>
-                    <td style={{ textAlign: "left", verticalAlign: "middle" }}>{value.namaJenisKegiatan}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }}
-                    >{value.jumlah}</td>
-                  </tr>
-                );
-                
-              })}
-              <tr style={{
-                    textAlign: "right",
-                    fontWeight: "bold",
-                    color:"BLACK"
-                  }}>
-                    <td  colSpan={3}>TOTAL : </td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }}
-                    >{total}</td>
-                  </tr>
-            </tbody>
-          </Table>
+          <h5 style={{ fontSize: "14px" }}>
+            {filterLabel.length > 0 ? (
+              <>
+                filtered by{" "}
+                {filterLabel
+                  .map((value) => {
+                    return value;
+                  })
+                  .join(", ")}
+              </>
+            ) : (
+              <></>
+            )}
+          </h5>
         </div>
+      </div>
+      <Table className={style.rlTable}>
+        <thead>
+          <tr>
+            <th style={{ width: "5%" }}>Nomor Kegiatan</th>
+            <th style={{ width: "5%" }}>Aksi</th>
+            <th style={{ width: "30%" }}>Jenis Kegiatan</th>
+            <th>Jumlah</th>
+          </tr>
+        </thead>
+        <tbody>
+          {dataRL.map((value, index) => {
+            return value.no === "16" ? (
+              <tr
+                style={{
+                  textAlign: "center",
+                  backgroundColor: "#90C8AC",
+                }}
+                key={value.jenisKegiatanRLTigaTitikEmpatBelasId}
+              >
+                <td style={{ textAlign: "left", verticalAlign: "middle" }}>
+                  {value.no}
+                </td>
+                <td colSpan={2}>
+                  {value.namaJenisKegiatan} <br /> (Hasil Penjumlahan dari Nomor
+                  Kegiatan 16.1, 16.2, 16.3, 16.4, 16.5)
+                </td>
+                <td>{value.jumlah}</td>
+              </tr>
+            ) : (
+              <tr key={value.jenisKegiatanRLTigaTitikEmpatBelasId}>
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                  {value.no}
+                </td>
+
+                <td style={{ textAlign: "left", verticalAlign: "middle" }}>
+                  <ToastContainer />
+                  <div style={{ display: "flex" }}>
+                    <button
+                      className="btn btn-danger"
+                      style={{
+                        margin: "0 5px 0 0",
+                        backgroundColor: "#FF6663",
+                        border: "1px solid #FF6663",
+                      }}
+                      type="button"
+                      onClick={(e) => hapus(value.id)}
+                    >
+                      Hapus
+                    </button>
+                    {value.no != 0 ? (
+                      <Link
+                        to={`/rl314/ubah/${value.id}`}
+                        className="btn btn-warning"
+                        style={{
+                          margin: "0 5px 0 0",
+                          backgroundColor: "#CFD35E",
+                          border: "1px solid #CFD35E",
+                          color: "#FFFFFF",
+                        }}
+                      >
+                        Ubah
+                      </Link>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                </td>
+                <td style={{ textAlign: "left", verticalAlign: "middle" }}>
+                  {value.namaJenisKegiatan}
+                </td>
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                  {value.jumlah}
+                </td>
+              </tr>
+            );
+          })}
+          <tr
+            style={{
+              textAlign: "right",
+              fontWeight: "bold",
+              color: "BLACK",
+            }}
+          >
+            <td colSpan={3}>TOTAL : </td>
+            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+              {total}
+            </td>
+          </tr>
+        </tbody>
+      </Table>
+    </div>
   );
 };
 

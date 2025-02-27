@@ -11,6 +11,7 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
 import { DownloadTableExcel } from "react-export-table-to-excel";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const RL51 = () => {
   const [bulan, setBulan] = useState(1);
@@ -29,6 +30,7 @@ const RL51 = () => {
   const navigate = useNavigate();
   const tableRef = useRef(null);
   const [namafile, setNamaFile] = useState("");
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -46,7 +48,12 @@ const RL51 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       showRumahSakit(decoded.satKerId);
@@ -64,7 +71,12 @@ const RL51 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -230,6 +242,7 @@ const RL51 = () => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "XSRF-TOKEN": CSRFToken,
       },
     };
     try {

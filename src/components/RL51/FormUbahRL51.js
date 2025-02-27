@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { IoArrowBack } from "react-icons/io5";
 import { Spinner, Table } from "react-bootstrap";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 export const FormUbahRL51 = () => {
   const [namaRS, setNamaRS] = useState("");
@@ -23,6 +24,7 @@ export const FormUbahRL51 = () => {
   const [spinner, setSpinner] = useState(false);
 
   const [datainput, setDataInput] = useState(null);
+  const { CSRFToken } = useCSRFTokenContext();
 
   useEffect(() => {
     refreshToken();
@@ -31,7 +33,12 @@ export const FormUbahRL51 = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -48,7 +55,12 @@ export const FormUbahRL51 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const response = await axios.get("/apisirs6v2/token");
+        const customConfig = {
+          headers: {
+            "XSRF-TOKEN": CSRFToken,
+          },
+        };
+        const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwt_decode(response.data.accessToken);
@@ -151,20 +163,6 @@ export const FormUbahRL51 = () => {
     const totalMati =
       datainput.jumlah_kunjungan_L + datainput.jumlah_kunjungan_P;
 
-    // const {
-    //   id,
-    //   icd_id,
-    //   periode,
-    //   rl_lima_titik_satu_id,
-    //   rs_id,
-    //   total_kasus_baru,
-    //   total_jumlah_kunjungan,
-    //   user_id,
-    //   jumlah_kunjungan_L,
-    //   jumlah_kunjungan_P,
-    //   ...payloadInsert
-    // } = datainput;
-
     const {
       id,
       icd,
@@ -186,6 +184,7 @@ export const FormUbahRL51 = () => {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            "XSRF-TOKEN": CSRFToken,
           },
         };
         await axiosJWT.patch(
@@ -256,7 +255,10 @@ export const FormUbahRL51 = () => {
   };
 
   return (
-    <div className="container" style={{ marginTop: "70px" }}>
+    <div
+      className="container"
+      style={{ marginTop: "70px", marginBottom: "100px" }}
+    >
       <form onSubmit={UpdateRLLimaTitikSatu}>
         <div className="row">
           <div className="col-md-6">

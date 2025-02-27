@@ -10,12 +10,15 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingSpinner from "./LoadingSpinner";
+import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const SSO_Login = () => {
   const [expire, setExpire] = useState("");
   const [user, setUser] = useState({});
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const { simpanCSRFToken, CSRFToken } = useCSRFTokenContext();
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get("token"); // Menarik token dari URL
@@ -29,63 +32,63 @@ const SSO_Login = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("/apisirs6v2/token");
+      const customConfig = {
+        headers: {
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      const response = await axios.get("/apisirs6v2/token", customConfig);
       const decoded = jwt_decode(response.data.accessToken);
       setUser(decoded);
       setUser((prevState) => {
-        // return prevState;
         navigate("/beranda");
       });
       setExpire(decoded.exp);
     } catch (error) {
-      // navigate('/verif');
-      //   window.location.replace(
-      //     "https://akun-yankes.kemkes.go.id/?continued=http://localhost:3000/v2"
-      //   );
       // window.location.replace(
       //   "https://akun-yankes.kemkes.go.id/?continued=" + window.location.href
       // );
 
-      console.log(error);
-      window.location.replace("https://akun-yankes.kemkes.go.id");
+      window.location.replace(
+        "http://192.168.50.86/single-sign-on/?continued=" + window.location.href
+      );
     }
   };
 
   const tokenAPI = async (token) => {
     document.querySelector(".loading-overlay").style.display = "flex";
 
-    // Menyembunyikan overlay setelah 3 detik (simulasi proses loading)
     setTimeout(() => {
-      document.querySelector(".loading-overlay").style.display = "none";
-    }, 3000); // Ganti waktu sesuai dengan kebutuhan (dalam milidetik)
+      // document.querySelector(".loading-overlay").style.display = "none";
+      const loadingOverlay = document.querySelector(".loading-overlay");
+      if (loadingOverlay) {
+        loadingOverlay.style.display = "none";
+      }
+    }, 3000);
+
     try {
-      const customConfig = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const results = await axios.get(
-        "/apisirs6v2/login?token=" + token,
-        customConfig
-      );
-      // Hapus parameter 'token' dari URL tanpa reload
-      const urlWithoutToken = window.location.href.split("?")[0]; // Ambil URL tanpa query string
-      window.history.replaceState({}, "", urlWithoutToken); // Gantilah URL tanpa query string
+      const results = await axios.get("/apisirs6v2/login?token=" + token);
+      simpanCSRFToken(results.data.data.csrfToken);
+      const urlWithoutToken = window.location.href.split("?")[0];
+      window.history.replaceState({}, "", urlWithoutToken);
       navigate("/beranda");
     } catch (error) {
-      // reCaptchaReference.current.reset()
       setLoading(false);
-
       if ((error.response.status = 404)) {
-        // console.log(error.response.status);
         toast("Akun anda Tidak Aktif Silahkan menghubungi Admin", {
           position: toast.POSITION.TOP_RIGHT,
         });
 
         setTimeout(() => {
           // Setelah delay, arahkan ke halaman lain
-          window.location.replace("https://akun-yankes.kemkes.go.id/");
+          window.location.replace("http://192.168.50.86/single-sign-on/");
+          // window.location.replace("https://akun-yankes.kemkes.go.id/");
         }, 2000); // Delay selama 3 detik (3000ms)
+      } else {
+        window.location.replace(
+          "http://192.168.50.86/single-sign-on/?continued=" +
+            window.location.href
+        );
       }
     }
   };
