@@ -45,13 +45,13 @@ const SSO_Login = () => {
       });
       setExpire(decoded.exp);
     } catch (error) {
-      // window.location.replace(
-      //   "https://akun-yankes.kemkes.go.id/?continued=" + window.location.href
-      // );
-
       window.location.replace(
-        "http://192.168.50.86/single-sign-on/?continued=" + window.location.href
+        "https://akun-yankes.kemkes.go.id/?continued=" + window.location.href
       );
+
+      // window.location.replace(
+      //   "http://192.168.50.86/single-sign-on/?continued=" + window.location.href
+      // );
     }
   };
 
@@ -81,12 +81,12 @@ const SSO_Login = () => {
 
         setTimeout(() => {
           // Setelah delay, arahkan ke halaman lain
-          window.location.replace("http://192.168.50.86/single-sign-on/");
-          // window.location.replace("https://akun-yankes.kemkes.go.id/");
+          // window.location.replace("http://192.168.50.86/single-sign-on/");
+          window.location.replace("https://akun-yankes.kemkes.go.id/");
         }, 2000); // Delay selama 3 detik (3000ms)
       } else {
         window.location.replace(
-          "http://192.168.50.86/single-sign-on/?continued=" +
+          "https://akun-yankes.kemkes.go.id/?continued=" +
             window.location.href
         );
       }

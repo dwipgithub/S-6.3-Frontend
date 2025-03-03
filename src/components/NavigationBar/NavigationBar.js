@@ -79,8 +79,8 @@ const NavigationBar = () => {
       await axios.delete("/apisirs6v2/logout", customConfig);
       localStorage.removeItem("id");
       // navigate('/')
-      // window.location.replace("https://akun-yankes.kemkes.go.id/");
-      window.location.replace("http://192.168.50.86/single-sign-on/");
+      window.location.replace("https://akun-yankes.kemkes.go.id/");
+      // window.location.replace("http://192.168.50.86/single-sign-on/");
     } catch (error) {
       console.log(error);
     }

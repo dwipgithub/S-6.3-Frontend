@@ -218,8 +218,8 @@ function App() {
             element={
               <>
                 <NavigationBar />
-                <MaintenancePage />
-                {/* <RL33 /> */}
+                {/* <MaintenancePage /> */}
+                <RL33 />
                 <Footer />
               </>
             }
