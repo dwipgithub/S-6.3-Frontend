@@ -6,8 +6,6 @@ import style from "./RL38.module.css";
 import { HiSaveAs } from "react-icons/hi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IoArrowBack } from "react-icons/io5";
-import Table from "react-bootstrap/esm/Table";
 import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const FormTambahRL38 = () => {
@@ -85,7 +83,7 @@ const FormTambahRL38 = () => {
       setAlamatRS(response.data.data.alamat);
       setNamaPropinsi(response.data.data.provinsi_nama);
       setNamaKabKota(response.data.data.kab_kota_nama);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const getRLTigaTitikDelapanTemplate = async () => {
@@ -117,13 +115,13 @@ const FormTambahRL38 = () => {
             checked: false,
           };
         } catch (error) {
-          console.error("Error map ${index}: ", error);
+          console.error("Error map ", index ," : ", error);
           return null;
         }
       });
 
       setDataRL(rlTemplate);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const changeHandlerSingle = (event) => {
@@ -165,13 +163,13 @@ const FormTambahRL38 = () => {
         event.target.select(event.target.value);
       }
 
-      newDataRL[index].rataLaki = parseInt(event.target.value);
+      newDataRL[index].rataLaki = event.target.value;
     } else if (name === "rataPerempuan") {
       if (event.target.value === "") {
         event.target.value = 0;
         event.target.select(event.target.value);
       }
-      newDataRL[index].rataPerempuan = parseInt(event.target.value);
+      newDataRL[index].rataPerempuan = event.target.value;
     }
     setDataRL(newDataRL);
   };
@@ -179,7 +177,7 @@ const FormTambahRL38 = () => {
   const handleFocus = (event) => event.target.select();
 
   const Simpan = async (e) => {
-    let periode = tahun + "-" + bulan + "-01";
+    // let periode = tahun + "-" + bulan + "-01";
     e.preventDefault();
 
     setButtonStatus(true);
@@ -206,14 +204,14 @@ const FormTambahRL38 = () => {
         },
       };
 
-      const response = await axios.get("/apisirs6v2/token", customConfig);
-      if (bulan === "00" || bulan == 0) {
+     await axios.get("/apisirs6v2/token", customConfig);
+      if (bulan === "00" || bulan === 0) {
         toast(`Data tidak bisa disimpan karena belum pilih periode laporan`, {
           position: toast.POSITION.TOP_RIGHT,
         });
         setButtonStatus(false);
       } else {
-        const result = await axiosJWT.post(
+          await axiosJWT.post(
           "/apisirs6v2/rltigatitikdelapan",
           {
             periodeBulan: parseInt(bulan),
@@ -252,6 +250,21 @@ const FormTambahRL38 = () => {
       e.preventDefault();
     }
   };
+
+  const validateDecimal = (e) => {
+    const input = e.target;
+    let value = input.value;
+
+    // value = value.replace('.', ',');
+
+    // Validasi: hanya angka dan maksimal 3 desimal
+    const regex = /^\d+(\.\d{0,3})?$/;
+    if (!regex.test(value)) {
+      // Jika tidak valid, hapus karakter terakhir
+      input.value = value.slice(0, -1);
+    }
+  }
+
 
   const maxLengthCheck = (object) => {
     if (object.target.value.length > object.target.maxLength) {
@@ -435,7 +448,7 @@ const FormTambahRL38 = () => {
                   {dataRL.map((value, index) => {
                     let disabled = true;
                     let visibled = true;
-                    if (value.no == 0) {
+                    if (value.no === 0) {
                       value.disabledInput = true;
                       disabled = false;
                       visibled = "block";
@@ -495,7 +508,7 @@ const FormTambahRL38 = () => {
                           />
                         </td>
                         <td>
-                          <input
+                          {/* <input
                             type="number"
                             name="rataLaki"
                             className="form-control"
@@ -508,10 +521,23 @@ const FormTambahRL38 = () => {
                             onInput={(e) => maxLengthCheck(e)}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
+                          /> */}
+                                                    <input
+                            type="text"
+                            name="rataLaki"
+                            className="form-control"
+                            value={value.rataLaki}
+                            onFocus={handleFocus}
+                            onChange={(e) => changeHandler(e, index)}
+                            disabled={value.disabledInput}
+                            maxLength={13}
+                            onInput={(e) => validateDecimal(e)}
+                            onPaste={preventPasteNegative}
+                            onKeyPress={preventMinus}
                           />
                         </td>
                         <td>
-                          <input
+                          {/* <input
                             type="number"
                             name="rataPerempuan"
                             className="form-control"
@@ -522,6 +548,19 @@ const FormTambahRL38 = () => {
                             min={0}
                             maxLength={7}
                             onInput={(e) => maxLengthCheck(e)}
+                            onPaste={preventPasteNegative}
+                            onKeyPress={preventMinus}
+                          /> */}
+                          <input
+                            type="text"
+                            name="rataPerempuan"
+                            className="form-control"
+                            value={value.rataPerempuan}
+                            onFocus={handleFocus}
+                            onChange={(e) => changeHandler(e, index)}
+                            disabled={value.disabledInput}
+                            maxLength={13}
+                            onInput={(e) => validateDecimal(e)}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                           />

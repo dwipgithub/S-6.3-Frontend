@@ -6,12 +6,11 @@ import style from "./RL38.module.css";
 import { HiSaveAs } from "react-icons/hi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IoArrowBack } from "react-icons/io5";
 import Table from "react-bootstrap/esm/Table";
 import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 export const FormEditRL38 = () => {
-  const [tahun, setTahun] = useState("");
+  // const [tahun, setTahun] = useState("");
   const [namaRS, setNamaRS] = useState("");
   const [alamatRS, setAlamatRS] = useState("");
   const [namaPropinsi, setNamaPropinsi] = useState("");
@@ -23,8 +22,8 @@ export const FormEditRL38 = () => {
   const [rataLaki, setRataLaki] = useState(0);
   const [rataPerempuan, setRataPerempuan] = useState(0);
   const [no, setNo] = useState("");
-  const [nama, setNama] = useState("");
-  const [dataRL, setDataRL] = useState([]);
+  // const [nama, setNama] = useState("");
+  // const [dataRL, setDataRL] = useState([]);
   const [token, setToken] = useState("");
   const [expire, setExpire] = useState("");
   const navigate = useNavigate();
@@ -166,8 +165,8 @@ export const FormEditRL38 = () => {
         },
       };
 
-      const response = await axios.get("/apisirs6v2/token", customConfig);
-      const result = await axiosJWT.patch(
+      await axios.get("/apisirs6v2/token", customConfig);
+      await axiosJWT.patch(
         "/apisirs6v2/rltigatitikdelapan/" + id,
         {
           no,
@@ -201,6 +200,20 @@ export const FormEditRL38 = () => {
       e.preventDefault();
     }
   };
+
+  const validateDecimal = (e) => {
+    const input = e.target;
+    let value = input.value;
+
+    // value = value.replace('.', ',');
+
+    // Validasi: hanya angka dan maksimal 3 desimal
+    const regex = /^\d+(\.\d{0,3})?$/;
+    if (!regex.test(value)) {
+      // Jika tidak valid, hapus karakter terakhir
+      input.value = value.slice(0, -1);
+    }
+  }
 
   const preventMinus = (e) => {
     if (e.code === "Minus") {
@@ -418,7 +431,7 @@ export const FormEditRL38 = () => {
                     {rLTigaTitikDelapanPemeriksaanId !== "Tidak Ada Data" && (
                       <div className="control">
                         <input
-                          type="number"
+                        type="text"
                           name="rataLaki"
                           className="form-control"
                           value={rataLaki}
@@ -426,6 +439,8 @@ export const FormEditRL38 = () => {
                           onFocus={handleFocus}
                           placeholder="Jumlah"
                           min={0}
+                          maxLength={13}
+                          onInput={(e) => validateDecimal(e)}
                           onPaste={preventPasteNegative}
                           onKeyPress={preventMinus}
                         />
@@ -453,7 +468,7 @@ export const FormEditRL38 = () => {
                     {rLTigaTitikDelapanPemeriksaanId !== "Tidak Ada Data" && (
                       <div className="control">
                         <input
-                          type="number"
+                          type="text"
                           name="rataPerempuan"
                           className="form-control"
                           value={rataPerempuan}
@@ -461,6 +476,8 @@ export const FormEditRL38 = () => {
                           onFocus={handleFocus}
                           placeholder="Jumlah"
                           min={0}
+                          maxLength={13}
+                          onInput={(e) => validateDecimal(e)}
                           onPaste={preventPasteNegative}
                           onKeyPress={preventMinus}
                         />
