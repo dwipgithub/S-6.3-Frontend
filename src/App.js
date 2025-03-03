@@ -138,8 +138,8 @@ function App() {
     <CSRFTokenProvider>
       <MemoryRouter initialEntries={["/beranda"]}>
         <Routes>
-          <Route path="/" element={<SSO_Login />} />
-          <Route path="/verif" element={<SSO_Verif />} />
+          <Route path="/" element={<Login />} />
+          {/* <Route path="/verif" element={<SSO_Verif />} /> */}
           {/* <Route path="/" element={<Login />} /> */}
           <Route
             path="/beranda"
