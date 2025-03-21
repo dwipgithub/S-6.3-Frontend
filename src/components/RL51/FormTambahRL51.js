@@ -11,7 +11,7 @@ import { IoArrowBack } from "react-icons/io5";
 import { Spinner } from "react-bootstrap";
 import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
-const FormTambahRL41 = () => {
+const FormTambahRL51 = () => {
   // const [tahun, setTahun] = useState(new Date().getFullYear() - 1);
   // const [tahun, setTahun] = useState(new Date().getFullYear());
   const [tahun, setTahun] = useState("2025");
@@ -433,6 +433,8 @@ const FormTambahRL41 = () => {
           });
           setTimeout(() => {
             navigate("/rl51");
+            // window.location.reload();
+            // navigate(0);
           }, 1000);
         } catch (error) {
           toast(
@@ -817,4 +819,4 @@ const FormTambahRL41 = () => {
   );
 };
 
-export default FormTambahRL41;
+export default FormTambahRL51;
