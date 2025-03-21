@@ -384,6 +384,8 @@ const Absensi = () => {
                   <th colSpan="12">RL 5.1</th>
                   <th colSpan="12">RL 5.2</th>
                   <th colSpan="12">RL 5.3</th>
+                  <th rowSpan="2" className={style.myTableTH} style={{ "width": "0.5%" }}>Jumlah</th>
+                  <th rowSpan="2" className={style.myTableTH} style={{ "width": "0.5%" }}>Presentase</th>
                 </tr>
                 <tr className={style["subheader-row"]}>
                   <th style={{ width: "200px" }}>1</th>
@@ -6229,6 +6231,26 @@ const Absensi = () => {
                           </div>
                         )}
                       </td>
+                      <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                                                {
+                                                   
+                                                        <div>
+                                                            <p class="text fw-bold" style={{color:'#32CD32' }}>{value.jumlah}</p>
+                                                        </div>
+                                                   
+                                                }
+                                            </td>
+
+                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                                                {
+                                                   
+                                                        <div>
+                                                            <p class="text fw-bold" style={{color:'#FF0000' }}>{
+                                                            Number((value.jumlah / 223) * 100).toFixed(1)}%</p>
+                                                        </div>
+                                                   
+                                                }
+                                            </td>
                     </tr>
                   );
                 })}
