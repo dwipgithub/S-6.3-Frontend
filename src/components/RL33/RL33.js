@@ -921,41 +921,54 @@ const RL33 = () => {
                                 disabled={true}
                               />
                             </td>
-                            <td
-                              className={style["sticky-column"]}
-                              style={{
-                                textAlign: "center",
-                                verticalAlign: "middle",
-                              }}
-                            >
-                              <ToastContainer />
-                              <div style={{ display: "flex" }}>
-                                <button
-                                  className="btn btn-danger"
+
+                            {value.jenis_pelayanan_rl_tiga_titik_tiga.no !==
+                              1 &&
+                            value.jenis_pelayanan_rl_tiga_titik_tiga.no !==
+                              2 ? (
+                              <>
+                                <td
+                                  className={style["sticky-column"]}
                                   style={{
-                                    margin: "0 5px 0 0",
-                                    backgroundColor: "#FF6663",
-                                    border: "1px solid #FF6663",
-                                  }}
-                                  type="button"
-                                  onClick={(e) => hapus(value.id)}
-                                >
-                                  Hapus
-                                </button>
-                                <Link
-                                  to={`/rl33/ubah/${value.id}`}
-                                  className="btn btn-warning"
-                                  style={{
-                                    margin: "0 5px 0 0",
-                                    backgroundColor: "#CFD35E",
-                                    border: "1px solid #CFD35E",
-                                    color: "#FFFFFF",
+                                    textAlign: "center",
+                                    verticalAlign: "middle",
                                   }}
                                 >
-                                  Ubah
-                                </Link>
-                              </div>
-                            </td>
+                                  <ToastContainer />
+                                  <div style={{ display: "flex" }}>
+                                    <button
+                                      className="btn btn-danger"
+                                      style={{
+                                        margin: "0 5px 0 0",
+                                        backgroundColor: "#FF6663",
+                                        border: "1px solid #FF6663",
+                                      }}
+                                      type="button"
+                                      onClick={(e) => hapus(value.id)}
+                                    >
+                                      Hapus
+                                    </button>
+                                    <Link
+                                      to={`/rl33/ubah/${value.id}`}
+                                      className="btn btn-warning"
+                                      style={{
+                                        margin: "0 5px 0 0",
+                                        backgroundColor: "#CFD35E",
+                                        border: "1px solid #CFD35E",
+                                        color: "#FFFFFF",
+                                      }}
+                                    >
+                                      Ubah
+                                    </Link>
+                                  </div>
+                                </td>
+                              </>
+                            ) : (
+                              <>
+                                <td></td>
+                              </>
+                            )}
+
                             <td className={style["sticky-column"]}>
                               <input
                                 type="text"
@@ -967,6 +980,7 @@ const RL33 = () => {
                                 disabled={true}
                               />
                             </td>
+
                             <td>
                               <input
                                 type="text"
