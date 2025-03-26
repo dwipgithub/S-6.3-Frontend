@@ -378,186 +378,186 @@ const FormTambahRL33 = () => {
           };
         });
 
-      let igdData = {
-        total_pasien_rujukan: 0,
-        total_pasien_non_rujukan: 0,
-        tlp_dirawat: 0,
-        tlp_dirujuk: 0,
-        tlp_pulang: 0,
-        m_igd_laki: 0,
-        m_igd_perempuan: 0,
-        doa_laki: 0,
-        doa_perempuan: 0,
-        luka_laki: 0,
-        luka_perempuan: 0,
-        false_emergency: 0,
-      };
+      // let igdData = {
+      //   total_pasien_rujukan: 0,
+      //   total_pasien_non_rujukan: 0,
+      //   tlp_dirawat: 0,
+      //   tlp_dirujuk: 0,
+      //   tlp_pulang: 0,
+      //   m_igd_laki: 0,
+      //   m_igd_perempuan: 0,
+      //   doa_laki: 0,
+      //   doa_perempuan: 0,
+      //   luka_laki: 0,
+      //   luka_perempuan: 0,
+      //   false_emergency: 0,
+      // };
 
-      const getIgdData = await axiosJWT.get(
-        "/apisirs6v2/cekrltigatitiktigadetail",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            tahun: parseInt(tahun),
-            bulan: bulan < 10 ? `0${parseInt(bulan)}` : parseInt(bulan),
-            specificId: 1,
-          },
-        }
-      );
+      // const getIgdData = await axiosJWT.get(
+      //   "/apisirs6v2/cekrltigatitiktigadetail",
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //     params: {
+      //       tahun: parseInt(tahun),
+      //       bulan: bulan < 10 ? `0${parseInt(bulan)}` : parseInt(bulan),
+      //       specificId: 1,
+      //     },
+      //   }
+      // );
 
-      dataRL
-        .filter((value) => {
-          return value.checked === true && value.no.includes("1.");
-        })
-        .map((value, index) => {
-          igdData.total_pasien_rujukan += parseInt(value.total_pasien_rujukan);
-          igdData.total_pasien_non_rujukan += parseInt(
-            value.total_pasien_non_rujukan
-          );
-          igdData.tlp_dirawat += parseInt(value.tlp_dirawat);
-          igdData.tlp_dirujuk += parseInt(value.tlp_dirujuk);
-          igdData.tlp_pulang += parseInt(value.tlp_pulang);
-          igdData.m_igd_laki += parseInt(value.m_igd_laki);
-          igdData.m_igd_perempuan += parseInt(value.m_igd_perempuan);
-          igdData.doa_laki += parseInt(value.doa_laki);
-          igdData.doa_perempuan += parseInt(value.doa_perempuan);
-          igdData.luka_laki += parseInt(value.luka_laki);
-          igdData.luka_perempuan += parseInt(value.luka_perempuan);
-          igdData.false_emergency += parseInt(value.false_emergency);
-        });
+      // dataRL
+      //   .filter((value) => {
+      //     return value.checked === true && value.no.includes("1.");
+      //   })
+      //   .map((value, index) => {
+      //     igdData.total_pasien_rujukan += parseInt(value.total_pasien_rujukan);
+      //     igdData.total_pasien_non_rujukan += parseInt(
+      //       value.total_pasien_non_rujukan
+      //     );
+      //     igdData.tlp_dirawat += parseInt(value.tlp_dirawat);
+      //     igdData.tlp_dirujuk += parseInt(value.tlp_dirujuk);
+      //     igdData.tlp_pulang += parseInt(value.tlp_pulang);
+      //     igdData.m_igd_laki += parseInt(value.m_igd_laki);
+      //     igdData.m_igd_perempuan += parseInt(value.m_igd_perempuan);
+      //     igdData.doa_laki += parseInt(value.doa_laki);
+      //     igdData.doa_perempuan += parseInt(value.doa_perempuan);
+      //     igdData.luka_laki += parseInt(value.luka_laki);
+      //     igdData.luka_perempuan += parseInt(value.luka_perempuan);
+      //     igdData.false_emergency += parseInt(value.false_emergency);
+      //   });
 
-      // console.log(getIgdData);
-      if (getIgdData.data.data != null) {
-        igdData.total_pasien_rujukan += parseInt(
-          getIgdData.data.data.total_pasien_rujukan
-        );
-        igdData.total_pasien_non_rujukan += parseInt(
-          getIgdData.data.data.total_pasien_non_rujukan
-        );
-        igdData.tlp_dirawat += parseInt(getIgdData.data.data.tlp_dirawat);
-        igdData.tlp_dirujuk += parseInt(getIgdData.data.data.tlp_dirujuk);
-        igdData.tlp_pulang += parseInt(getIgdData.data.data.tlp_pulang);
-        igdData.m_igd_laki += parseInt(getIgdData.data.data.m_igd_laki);
-        igdData.m_igd_perempuan += parseInt(
-          getIgdData.data.data.m_igd_perempuan
-        );
-        igdData.doa_laki += parseInt(getIgdData.data.data.doa_laki);
-        igdData.doa_perempuan += parseInt(getIgdData.data.data.doa_perempuan);
-        igdData.luka_laki += parseInt(getIgdData.data.data.luka_laki);
-        igdData.luka_perempuan += parseInt(getIgdData.data.data.luka_perempuan);
-        igdData.false_emergency += parseInt(
-          getIgdData.data.data.false_emergency
-        );
+      // // console.log(getIgdData);
+      // if (getIgdData.data.data != null) {
+      //   igdData.total_pasien_rujukan += parseInt(
+      //     getIgdData.data.data.total_pasien_rujukan
+      //   );
+      //   igdData.total_pasien_non_rujukan += parseInt(
+      //     getIgdData.data.data.total_pasien_non_rujukan
+      //   );
+      //   igdData.tlp_dirawat += parseInt(getIgdData.data.data.tlp_dirawat);
+      //   igdData.tlp_dirujuk += parseInt(getIgdData.data.data.tlp_dirujuk);
+      //   igdData.tlp_pulang += parseInt(getIgdData.data.data.tlp_pulang);
+      //   igdData.m_igd_laki += parseInt(getIgdData.data.data.m_igd_laki);
+      //   igdData.m_igd_perempuan += parseInt(
+      //     getIgdData.data.data.m_igd_perempuan
+      //   );
+      //   igdData.doa_laki += parseInt(getIgdData.data.data.doa_laki);
+      //   igdData.doa_perempuan += parseInt(getIgdData.data.data.doa_perempuan);
+      //   igdData.luka_laki += parseInt(getIgdData.data.data.luka_laki);
+      //   igdData.luka_perempuan += parseInt(getIgdData.data.data.luka_perempuan);
+      //   igdData.false_emergency += parseInt(
+      //     getIgdData.data.data.false_emergency
+      //   );
 
-        await axiosJWT.patch(
-          "/apisirs6v2/rltigatitiktigadetail/" + getIgdData.data.data.id,
-          igdData,
-          customConfig
-        );
-      } else {
-        igdData.jenisPelayananTigaTitikTigaId = 1;
-        dataRLArray.push(igdData);
-      }
+      //   await axiosJWT.patch(
+      //     "/apisirs6v2/rltigatitiktigadetail/" + getIgdData.data.data.id,
+      //     igdData,
+      //     customConfig
+      //   );
+      // } else {
+      //   igdData.jenisPelayananTigaTitikTigaId = 1;
+      //   dataRLArray.push(igdData);
+      // }
 
-      let nonBedahData = {
-        total_pasien_rujukan: 0,
-        total_pasien_non_rujukan: 0,
-        tlp_dirawat: 0,
-        tlp_dirujuk: 0,
-        tlp_pulang: 0,
-        m_igd_laki: 0,
-        m_igd_perempuan: 0,
-        doa_laki: 0,
-        doa_perempuan: 0,
-        luka_laki: 0,
-        luka_perempuan: 0,
-        false_emergency: 0,
-      };
+      // let nonBedahData = {
+      //   total_pasien_rujukan: 0,
+      //   total_pasien_non_rujukan: 0,
+      //   tlp_dirawat: 0,
+      //   tlp_dirujuk: 0,
+      //   tlp_pulang: 0,
+      //   m_igd_laki: 0,
+      //   m_igd_perempuan: 0,
+      //   doa_laki: 0,
+      //   doa_perempuan: 0,
+      //   luka_laki: 0,
+      //   luka_perempuan: 0,
+      //   false_emergency: 0,
+      // };
 
-      const getNonBedahData = await axiosJWT.get(
-        "/apisirs6v2/cekrltigatitiktigadetail",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            tahun: parseInt(tahun),
-            bulan: parseInt(bulan),
-            specificId: 6,
-          },
-        }
-      );
+      // const getNonBedahData = await axiosJWT.get(
+      //   "/apisirs6v2/cekrltigatitiktigadetail",
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //     params: {
+      //       tahun: parseInt(tahun),
+      //       bulan: parseInt(bulan),
+      //       specificId: 6,
+      //     },
+      //   }
+      // );
 
-      dataRL
-        .filter((value) => {
-          return value.checked === true && value.no.includes("2.");
-        })
-        .map((value, index) => {
-          nonBedahData.total_pasien_rujukan += parseInt(
-            value.total_pasien_rujukan
-          );
-          nonBedahData.total_pasien_non_rujukan += parseInt(
-            value.total_pasien_non_rujukan
-          );
-          nonBedahData.tlp_dirawat += parseInt(value.tlp_dirawat);
-          nonBedahData.tlp_dirujuk += parseInt(value.tlp_dirujuk);
-          nonBedahData.tlp_pulang += parseInt(value.tlp_pulang);
-          nonBedahData.m_igd_laki += parseInt(value.m_igd_laki);
-          nonBedahData.m_igd_perempuan += parseInt(value.m_igd_perempuan);
-          nonBedahData.doa_laki += parseInt(value.doa_laki);
-          nonBedahData.doa_perempuan += parseInt(value.doa_perempuan);
-          nonBedahData.luka_laki += parseInt(value.luka_laki);
-          nonBedahData.luka_perempuan += parseInt(value.luka_perempuan);
-          nonBedahData.false_emergency += parseInt(value.false_emergency);
-        });
+      // dataRL
+      //   .filter((value) => {
+      //     return value.checked === true && value.no.includes("2.");
+      //   })
+      //   .map((value, index) => {
+      //     nonBedahData.total_pasien_rujukan += parseInt(
+      //       value.total_pasien_rujukan
+      //     );
+      //     nonBedahData.total_pasien_non_rujukan += parseInt(
+      //       value.total_pasien_non_rujukan
+      //     );
+      //     nonBedahData.tlp_dirawat += parseInt(value.tlp_dirawat);
+      //     nonBedahData.tlp_dirujuk += parseInt(value.tlp_dirujuk);
+      //     nonBedahData.tlp_pulang += parseInt(value.tlp_pulang);
+      //     nonBedahData.m_igd_laki += parseInt(value.m_igd_laki);
+      //     nonBedahData.m_igd_perempuan += parseInt(value.m_igd_perempuan);
+      //     nonBedahData.doa_laki += parseInt(value.doa_laki);
+      //     nonBedahData.doa_perempuan += parseInt(value.doa_perempuan);
+      //     nonBedahData.luka_laki += parseInt(value.luka_laki);
+      //     nonBedahData.luka_perempuan += parseInt(value.luka_perempuan);
+      //     nonBedahData.false_emergency += parseInt(value.false_emergency);
+      //   });
 
-      if (getNonBedahData.data.data != null) {
-        nonBedahData.total_pasien_rujukan += parseInt(
-          getNonBedahData.data.data.total_pasien_rujukan
-        );
-        nonBedahData.total_pasien_non_rujukan += parseInt(
-          getNonBedahData.data.data.total_pasien_non_rujukan
-        );
-        nonBedahData.tlp_dirawat += parseInt(
-          getNonBedahData.data.data.tlp_dirawat
-        );
-        nonBedahData.tlp_dirujuk += parseInt(
-          getNonBedahData.data.data.tlp_dirujuk
-        );
-        nonBedahData.tlp_pulang += parseInt(
-          getNonBedahData.data.data.tlp_pulang
-        );
-        nonBedahData.m_igd_laki += parseInt(
-          getNonBedahData.data.data.m_igd_laki
-        );
-        nonBedahData.m_igd_perempuan += parseInt(
-          getNonBedahData.data.data.m_igd_perempuan
-        );
-        nonBedahData.doa_laki += parseInt(getNonBedahData.data.data.doa_laki);
-        nonBedahData.doa_perempuan += parseInt(
-          getNonBedahData.data.data.doa_perempuan
-        );
-        nonBedahData.luka_laki += parseInt(getNonBedahData.data.data.luka_laki);
-        nonBedahData.luka_perempuan += parseInt(
-          getNonBedahData.data.data.luka_perempuan
-        );
-        nonBedahData.false_emergency += parseInt(
-          getNonBedahData.data.data.false_emergency
-        );
+      // if (getNonBedahData.data.data != null) {
+      //   nonBedahData.total_pasien_rujukan += parseInt(
+      //     getNonBedahData.data.data.total_pasien_rujukan
+      //   );
+      //   nonBedahData.total_pasien_non_rujukan += parseInt(
+      //     getNonBedahData.data.data.total_pasien_non_rujukan
+      //   );
+      //   nonBedahData.tlp_dirawat += parseInt(
+      //     getNonBedahData.data.data.tlp_dirawat
+      //   );
+      //   nonBedahData.tlp_dirujuk += parseInt(
+      //     getNonBedahData.data.data.tlp_dirujuk
+      //   );
+      //   nonBedahData.tlp_pulang += parseInt(
+      //     getNonBedahData.data.data.tlp_pulang
+      //   );
+      //   nonBedahData.m_igd_laki += parseInt(
+      //     getNonBedahData.data.data.m_igd_laki
+      //   );
+      //   nonBedahData.m_igd_perempuan += parseInt(
+      //     getNonBedahData.data.data.m_igd_perempuan
+      //   );
+      //   nonBedahData.doa_laki += parseInt(getNonBedahData.data.data.doa_laki);
+      //   nonBedahData.doa_perempuan += parseInt(
+      //     getNonBedahData.data.data.doa_perempuan
+      //   );
+      //   nonBedahData.luka_laki += parseInt(getNonBedahData.data.data.luka_laki);
+      //   nonBedahData.luka_perempuan += parseInt(
+      //     getNonBedahData.data.data.luka_perempuan
+      //   );
+      //   nonBedahData.false_emergency += parseInt(
+      //     getNonBedahData.data.data.false_emergency
+      //   );
 
-        await axiosJWT.patch(
-          "/apisirs6v2/rltigatitiktigadetail/" + getNonBedahData.data.data.id,
-          nonBedahData,
-          customConfig
-        );
-      } else {
-        nonBedahData.jenisPelayananTigaTitikTigaId = 6;
-        dataRLArray.push(nonBedahData);
-      }
+      //   await axiosJWT.patch(
+      //     "/apisirs6v2/rltigatitiktigadetail/" + getNonBedahData.data.data.id,
+      //     nonBedahData,
+      //     customConfig
+      //   );
+      // } else {
+      //   nonBedahData.jenisPelayananTigaTitikTigaId = 6;
+      //   dataRLArray.push(nonBedahData);
+      // }
 
       const result = await axiosJWT.post(
         "/apisirs6v2/rltigatitiktiga",
