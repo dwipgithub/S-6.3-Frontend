@@ -49,6 +49,7 @@ const RL33 = () => {
       const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
+      // console.log(decoded);
       showRumahSakit(decoded.satKerId);
       setExpire(decoded.exp);
       setUser(decoded);
@@ -154,6 +155,84 @@ const RL33 = () => {
           dataRLTigaTitikTigaDetails.push(value);
         });
       });
+
+      const sumValuesForIds = (ids) => {
+        return dataRLTigaTitikTigaDetails.reduce(
+          (acc, record) => {
+            if (ids.includes(record.jenis_pelayanan_rl_tiga_titik_tiga_id)) {
+              acc.total_pasien_rujukan += record.total_pasien_rujukan;
+              acc.total_pasien_non_rujukan += record.total_pasien_non_rujukan;
+              acc.tlp_dirawat += record.tlp_dirawat;
+              acc.tlp_dirujuk += record.tlp_dirujuk;
+              acc.tlp_pulang += record.tlp_pulang;
+              acc.m_igd_laki += record.m_igd_laki;
+              acc.m_igd_perempuan += record.m_igd_perempuan;
+              acc.doa_laki += record.doa_laki;
+              acc.doa_perempuan += record.doa_perempuan;
+              acc.luka_laki += record.luka_laki;
+              acc.luka_perempuan += record.luka_perempuan;
+              acc.false_emergency += record.false_emergency;
+            }
+            return acc;
+          },
+          {
+            total_pasien_rujukan: 0,
+            total_pasien_non_rujukan: 0,
+            tlp_dirawat: 0,
+            tlp_dirujuk: 0,
+            tlp_pulang: 0,
+            m_igd_laki: 0,
+            m_igd_perempuan: 0,
+            doa_laki: 0,
+            doa_perempuan: 0,
+            luka_laki: 0,
+            luka_perempuan: 0,
+            false_emergency: 0,
+          }
+        );
+      };
+
+      // Summing for IDs 2, 3, 4, and 5
+      const sumValues = sumValuesForIds([2, 3, 4, 5]);
+
+      // Create a new record for ID 1 based on the summed values
+      const newRecordForId1 = {
+        jenis_pelayanan_rl_tiga_titik_tiga: {
+          id: 1,
+          no: 1,
+          nama: "Bedah di Instalasi Gawat Darurat",
+        },
+        jenis_pelayanan_rl_tiga_titik_tiga_id: 1, // ID for 'jenis_pelayanan_rl_tiga_titik_tiga'
+        rl_tiga_titik_tiga_id:
+          dataRLTigaTitikTigaDetails[0]?.rl_tiga_titik_tiga_id, // Assuming all have the same `rl_tiga_titik_tiga_id`
+        rs_id: rumahSakit.id, // Add the hospital ID
+        tahun: `${tahun}-${bulan < 10 ? `0${bulan}` : bulan}-01`, // Format year and month
+        bulan: bulan,
+        ...sumValues,
+        user_id: 8, // Assuming the user_id is 8
+      };
+
+      // If IDs are 7, 8, 9, 10, create a new record for ID 6 based on summed values
+      const sumValuesForIds67810 = sumValuesForIds([7, 8, 9, 10]);
+
+      const newRecordForId6 = {
+        jenis_pelayanan_rl_tiga_titik_tiga: {
+          id: 6,
+          no: 2,
+          nama: "Non Bedah",
+        },
+        jenis_pelayanan_rl_tiga_titik_tiga_id: 6, // ID for 'jenis_pelayanan_rl_tiga_titik_tiga'
+        rl_tiga_titik_tiga_id:
+          dataRLTigaTitikTigaDetails[0]?.rl_tiga_titik_tiga_id, // Assuming all have the same `rl_tiga_titik_tiga_id`
+        rs_id: rumahSakit.id, // Add the hospital ID
+        tahun: `${tahun}-${bulan < 10 ? `0${bulan}` : bulan}-01`, // Format year and month
+        bulan: bulan,
+        ...sumValuesForIds67810,
+        user_id: 8, // Assuming the user_id is 8
+      };
+      dataRLTigaTitikTigaDetails.push(newRecordForId1);
+      dataRLTigaTitikTigaDetails.push(newRecordForId6);
+
       setDataRL(dataRLTigaTitikTigaDetails);
       setRumahSakit(null);
       handleClose();
@@ -161,53 +240,6 @@ const RL33 = () => {
       console.log(error);
     }
   };
-
-  // const hapusData = async (id) => {
-  //   const customConfig = {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   };
-  //   try {
-  //     let parent;
-  //     const currentData = await getRLTigaTitikTigaById(id);
-
-  //     if (currentData.jenis_pelayanan_rl_tiga_titik_tiga.no.includes("1.")) {
-  //       parent = await getParent(1, id);
-  //     } else if (
-  //       currentData.jenis_pelayanan_rl_tiga_titik_tiga.no.includes("2.")
-  //     ) {
-  //       parent = await getParent(2, id);
-  //     }
-
-  //     if (parent) {
-  //       await axiosJWT.patch(
-  //         "/apisirs6v2/rltigatitiktigadetail/" + parent.id,
-  //         parent.data,
-  //         customConfig
-  //       );
-  //     }
-  //     const results = await axiosJWT.delete(
-  //       `/apisirs6v2/rltigatitiktiga/${id}`,
-  //       customConfig
-  //     );
-  //     // getDataRLTigaTitikTiga();
-  //     toast("Data Berhasil Dihapus", {
-  //       position: toast.POSITION.TOP_RIGHT,
-  //     });
-
-  //     setTimeout(() => {
-  //       window.location.reload();
-  //     }, 3000);
-  //     // setDataRL((current) => current.filter((value) => value.id !== id));
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast("Data Gagal Disimpan", {
-  //       position: toast.POSITION.TOP_RIGHT,
-  //     });
-  //   }
-  // };
 
   const hapusData = async (id) => {
     const customConfig = {
@@ -452,29 +484,20 @@ const RL33 = () => {
     false_emergency: 0,
   };
 
-  dataRL
-    .filter((value) => {
-      return (
-        value.jenis_pelayanan_rl_tiga_titik_tiga.no != 1 &&
-        value.jenis_pelayanan_rl_tiga_titik_tiga.no != 2
-      );
-    })
-    .map((value, index) => {
-      total.total_pasien_rujukan += parseInt(value.total_pasien_rujukan);
-      total.total_pasien_non_rujukan += parseInt(
-        value.total_pasien_non_rujukan
-      );
-      total.tlp_dirawat += parseInt(value.tlp_dirawat);
-      total.tlp_dirujuk += parseInt(value.tlp_dirujuk);
-      total.tlp_pulang += parseInt(value.tlp_pulang);
-      total.m_igd_laki += parseInt(value.m_igd_laki);
-      total.m_igd_perempuan += parseInt(value.m_igd_perempuan);
-      total.doa_laki += parseInt(value.doa_laki);
-      total.doa_perempuan += parseInt(value.doa_perempuan);
-      total.luka_laki += parseInt(value.luka_laki);
-      total.luka_perempuan += parseInt(value.luka_perempuan);
-      total.false_emergency += parseInt(value.false_emergency);
-    });
+  dataRL.map((value, index) => {
+    total.total_pasien_rujukan += parseInt(value.total_pasien_rujukan);
+    total.total_pasien_non_rujukan += parseInt(value.total_pasien_non_rujukan);
+    total.tlp_dirawat += parseInt(value.tlp_dirawat);
+    total.tlp_dirujuk += parseInt(value.tlp_dirujuk);
+    total.tlp_pulang += parseInt(value.tlp_pulang);
+    total.m_igd_laki += parseInt(value.m_igd_laki);
+    total.m_igd_perempuan += parseInt(value.m_igd_perempuan);
+    total.doa_laki += parseInt(value.doa_laki);
+    total.doa_perempuan += parseInt(value.doa_perempuan);
+    total.luka_laki += parseInt(value.luka_laki);
+    total.luka_perempuan += parseInt(value.luka_perempuan);
+    total.false_emergency += parseInt(value.false_emergency);
+  });
 
   function handleDownloadExcel() {
     const header = [
@@ -870,6 +893,20 @@ const RL33 = () => {
                           value.total_pasien_rujukan > 0 ||
                           value.total_pasien_non_rujukan > 0
                       )
+                      .sort((a, b) => {
+                        const noA = a.jenis_pelayanan_rl_tiga_titik_tiga.no;
+                        const noB = b.jenis_pelayanan_rl_tiga_titik_tiga.no;
+
+                        // Check if `no` is a number or a string
+                        if (
+                          typeof noA === "string" &&
+                          typeof noB === "string"
+                        ) {
+                          return noA.localeCompare(noB); // String comparison
+                        } else {
+                          return Number(noA) - Number(noB); // Numeric comparison
+                        }
+                      })
                       .map((value, index) => {
                         return (
                           <tr key={value.id}>
@@ -884,48 +921,54 @@ const RL33 = () => {
                                 disabled={true}
                               />
                             </td>
-                            <td
-                              className={style["sticky-column"]}
-                              style={{
-                                textAlign: "center",
-                                verticalAlign: "middle",
-                              }}
-                            >
-                              <ToastContainer />
-                              {value.jenis_pelayanan_rl_tiga_titik_tiga.no !=
-                                1 &&
-                              value.jenis_pelayanan_rl_tiga_titik_tiga.no !=
-                                2 ? (
-                                <div style={{ display: "flex" }}>
-                                  <button
-                                    className="btn btn-danger"
-                                    style={{
-                                      margin: "0 5px 0 0",
-                                      backgroundColor: "#FF6663",
-                                      border: "1px solid #FF6663",
-                                    }}
-                                    type="button"
-                                    onClick={(e) => hapus(value.id)}
-                                  >
-                                    Hapus
-                                  </button>
-                                  <Link
-                                    to={`/rl33/ubah/${value.id}`}
-                                    className="btn btn-warning"
-                                    style={{
-                                      margin: "0 5px 0 0",
-                                      backgroundColor: "#CFD35E",
-                                      border: "1px solid #CFD35E",
-                                      color: "#FFFFFF",
-                                    }}
-                                  >
-                                    Ubah
-                                  </Link>
-                                </div>
-                              ) : (
-                                ""
-                              )}
-                            </td>
+
+                            {value.jenis_pelayanan_rl_tiga_titik_tiga.no !==
+                              1 &&
+                            value.jenis_pelayanan_rl_tiga_titik_tiga.no !==
+                              2 ? (
+                              <>
+                                <td
+                                  className={style["sticky-column"]}
+                                  style={{
+                                    textAlign: "center",
+                                    verticalAlign: "middle",
+                                  }}
+                                >
+                                  <ToastContainer />
+                                  <div style={{ display: "flex" }}>
+                                    <button
+                                      className="btn btn-danger"
+                                      style={{
+                                        margin: "0 5px 0 0",
+                                        backgroundColor: "#FF6663",
+                                        border: "1px solid #FF6663",
+                                      }}
+                                      type="button"
+                                      onClick={(e) => hapus(value.id)}
+                                    >
+                                      Hapus
+                                    </button>
+                                    <Link
+                                      to={`/rl33/ubah/${value.id}`}
+                                      className="btn btn-warning"
+                                      style={{
+                                        margin: "0 5px 0 0",
+                                        backgroundColor: "#CFD35E",
+                                        border: "1px solid #CFD35E",
+                                        color: "#FFFFFF",
+                                      }}
+                                    >
+                                      Ubah
+                                    </Link>
+                                  </div>
+                                </td>
+                              </>
+                            ) : (
+                              <>
+                                <td></td>
+                              </>
+                            )}
+
                             <td className={style["sticky-column"]}>
                               <input
                                 type="text"
@@ -937,6 +980,7 @@ const RL33 = () => {
                                 disabled={true}
                               />
                             </td>
+
                             <td>
                               <input
                                 type="text"
@@ -1052,7 +1096,6 @@ const RL33 = () => {
                       <td></td>
                       <td></td>
                       <td
-                        // colSpan={3}
                         style={{ textAlign: "center" }}
                         className={style["sticky-column"]}
                       >
