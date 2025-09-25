@@ -862,7 +862,7 @@ const RL33 = () => {
                 </tr>
               </thead>
               <tbody>
-                {dataRL.length > 1 ? (
+                {dataRL.length > 0 ? (
                   <>
                     {dataRL
                       .filter(

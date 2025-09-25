@@ -609,7 +609,7 @@ const RL315 = () => {
                               disabled={true}
                             />
                           </td>
-                          <td className={style["sticky-column"]}>
+                          {/* <td className={style["sticky-column"]}>
                             <ToastContainer />
                             {value.jenis_kegiatan_rl_tiga_titik_lima_belas
                               .no === 0 ? (
@@ -651,6 +651,49 @@ const RL315 = () => {
                                 </Link>
                               </div>
                             )}
+                          </td> */}
+                          <td className={style["sticky-column"]}>
+                            <ToastContainer />
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent:
+                                  value.jenis_kegiatan_rl_tiga_titik_lima_belas
+                                    .nama === "Tidak Ada Data"
+                                    ? "center" // kalau tidak ada data -> tombol hapus di tengah
+                                    : "flex-start", // kalau ada data -> tombol hapus + ubah sejajar dari kiri
+                              }}
+                            >
+                              <button
+                                className="btn btn-danger"
+                                style={{
+                                  margin: "0 5px 0 0",
+                                  backgroundColor: "#FF6663",
+                                  border: "1px solid #FF6663",
+                                }}
+                                type="button"
+                                onClick={(e) => hapus(value.id)}
+                              >
+                                Hapus
+                              </button>
+
+                              {/* Tampilkan tombol Ubah hanya jika bukan "Tidak Ada Data" */}
+                              {value.jenis_kegiatan_rl_tiga_titik_lima_belas
+                                .nama !== "Tidak Ada Data" && (
+                                <Link
+                                  to={`/rl315/ubah/${value.id}`}
+                                  className="btn btn-warning"
+                                  style={{
+                                    margin: "0 5px 0 0",
+                                    backgroundColor: "#CFD35E",
+                                    border: "1px solid #CFD35E",
+                                    color: "#FFFFFF",
+                                  }}
+                                >
+                                  Ubah
+                                </Link>
+                              )}
+                            </div>
                           </td>
                           <td className={style["sticky-column"]}>
                             <input
