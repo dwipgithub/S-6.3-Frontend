@@ -26,6 +26,8 @@ import FormTambahRL33 from "./components/RL33/FormTambahRL33";
 import FormUbahRL33 from "./components/RL33/FormUbahRL33";
 
 // RL 3.4
+import BrandaRL34 from "./components/RL34/BrandaRL34.js";
+import SatuSehatRL34 from "./components/RL34/SatuSehatRL34.js";
 import RL34 from "./components/RL34/RL34.js";
 import FormTambahRL34 from "./components/RL34/FormTambahRL34";
 import FormUbahRL34 from "./components/RL34/FormUbahRL34";
@@ -117,6 +119,8 @@ import RL42 from "./components/RL42/RL42.js";
 import RL43 from "./components/RL43/RL43.js";
 
 // RL 5.1
+import MenuRL51 from "./components/RL51/MenuRL51.js";
+import RL51SATUSEHAT from "./components/RL51/RL51SatuSehat.js";
 import RL51 from "./components/RL51/RL51.js";
 import FormTambahRL51 from "./components/RL51/FormTambahRL51";
 import FormEditRL51 from "./components/RL51/FormUbahRL51";
@@ -240,6 +244,28 @@ function App() {
               <>
                 <NavigationBar />
                 <FormUbahRL33 />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/brandarl34"
+            element={
+              <>
+                <NavigationBar />
+                <BrandaRL34 />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/satusehatrl34"
+            element={
+              <>
+                <NavigationBar />
+                <SatuSehatRL34 />
                 <Footer />
               </>
             }
@@ -800,11 +826,33 @@ function App() {
           />
 
           <Route
+            path="/MENURL51"
+            element={
+              <>
+                <NavigationBar />
+                <MenuRL51 />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
             path="/RL51"
             element={
               <>
                 <NavigationBar />
                 <RL51 />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/RL51SATUSEHAT"
+            element={
+              <>
+                <NavigationBar />
+                <RL51SATUSEHAT />
                 <Footer />
               </>
             }

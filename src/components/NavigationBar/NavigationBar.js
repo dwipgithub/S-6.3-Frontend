@@ -118,7 +118,7 @@ const NavigationBar = () => {
               <NavDropdown.Item as={Link} to="/rl33">
                 RL 3.3 Rawat Darurat
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/rl34">
+              <NavDropdown.Item as={Link} to="/brandarl34">
                 RL 3.4 Pengunjung
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/rl35">
@@ -179,7 +179,7 @@ const NavigationBar = () => {
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="RL.5" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to="/rl51">
+              <NavDropdown.Item as={Link} to="/MENURL51">
                 RL 5.1 Mobiditas Pasien Rawat Jalan
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/rl52">
