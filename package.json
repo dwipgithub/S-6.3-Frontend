@@ -1,6 +1,6 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "SIRS",
+  "version": "0.1.2",
   "private": true,
   "homepage": "/v3",
   "dependencies": {
