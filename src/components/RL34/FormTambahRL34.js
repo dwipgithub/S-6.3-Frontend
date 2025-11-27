@@ -183,7 +183,7 @@ const FormTambahRL34 = () => {
         position: toast.POSITION.TOP_RIGHT,
       });
       setTimeout(() => {
-        navigate("/rl34");
+        navigate("/brandarl34");
       }, 1000);
     } catch (error) {
       toast(`Data tidak bisa disimpan karena ,${error.response.data.message}`, {

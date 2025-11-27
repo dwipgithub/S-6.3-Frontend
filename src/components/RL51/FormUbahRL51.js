@@ -196,7 +196,7 @@ export const FormUbahRL51 = () => {
           position: toast.POSITION.TOP_RIGHT,
         });
         setTimeout(() => {
-          navigate("/rl51");
+          navigate("/MENURL51");
         }, 1000);
       } catch (error) {
         toast("Data Gagal Diupdate, " + error.response.data.message, {
