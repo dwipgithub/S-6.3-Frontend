@@ -585,7 +585,6 @@ const SatuSehatRL34 = () => {
               <tr>
                 <th>No.</th>
                 <th>Bulan</th>
-                <th>Organization ID</th>
                 <th>Pengunjung Baru</th>
                 <th>Pengunjung Lama</th>
                 <th>Total</th>
@@ -603,7 +602,6 @@ const SatuSehatRL34 = () => {
                   <tr key={idx} style={{ textAlign: "center" }}>
                     <td>{idx + 1}</td>
                     <td>{item.month}</td>
-                    <td>{item.organization_id}</td>
                     <td>{item.new_visitors}</td>
                     <td>{item.returning_visitors}</td>
                     <td>{item.total_visitors}</td>
