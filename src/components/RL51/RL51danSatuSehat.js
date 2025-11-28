@@ -2052,7 +2052,7 @@ function TabTwo() {
         toast.success(response.message);
         getDataRL();
       } else {
-        toast.error("Gagal menarik data Satusehat.");
+        toast.error("Status SatuSehat : " + response.message);
       }
     } catch (err) {
       toast.error("Gagal menarik data Satusehat.");
