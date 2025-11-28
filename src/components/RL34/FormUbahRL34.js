@@ -133,7 +133,7 @@ export const FormUbahRL34 = () => {
         position: toast.POSITION.TOP_RIGHT,
       });
       setTimeout(() => {
-        navigate("/rl34");
+        navigate("/brandarl34");
       }, 1000);
     } catch (error) {
       console.log(error);

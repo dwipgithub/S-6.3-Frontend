@@ -31,6 +31,7 @@ import SatuSehatRL34 from "./components/RL34/SatuSehatRL34.js";
 import RL34 from "./components/RL34/RL34.js";
 import FormTambahRL34 from "./components/RL34/FormTambahRL34";
 import FormUbahRL34 from "./components/RL34/FormUbahRL34";
+import TabMenu34 from "./components/RL34/RL34danSatuSehat.js";
 
 // RL 3.5
 import RL35 from "./components/RL35/RL35.js";
@@ -124,6 +125,7 @@ import RL51SATUSEHAT from "./components/RL51/RL51SatuSehat.js";
 import RL51 from "./components/RL51/RL51.js";
 import FormTambahRL51 from "./components/RL51/FormTambahRL51";
 import FormEditRL51 from "./components/RL51/FormUbahRL51";
+import RL51danSatuSehat from "./components/RL51/RL51danSatuSehat.js";
 
 // RL 5.2
 import RL52 from "./components/RL52/RL52.js";
@@ -254,7 +256,7 @@ function App() {
             element={
               <>
                 <NavigationBar />
-                <BrandaRL34 />
+                <TabMenu34 />
                 <Footer />
               </>
             }
@@ -830,7 +832,8 @@ function App() {
             element={
               <>
                 <NavigationBar />
-                <MenuRL51 />
+                <RL51danSatuSehat />
+                {/* <MenuRL51 /> */}
                 <Footer />
               </>
             }

@@ -88,19 +88,19 @@
 .table thead th.sticky-header-view:nth-child(2) {
   position: -webkit-sticky; /* For Safari */
   position: sticky;
-  left: 72px;
+  left: 66px;
   z-index: 4; /* Above both header and body content */
 }
 .table thead th.sticky-header-view:nth-child(3) {
   position: -webkit-sticky; /* For Safari */
   position: sticky;
-  left: 216px;
+  left: 200px;
   z-index: 4; /* Above both header and body content */
 }
 .table thead th.sticky-header-view:nth-child(4) {
   position: -webkit-sticky; /* For Safari */
   position: sticky;
-  left: 360px;
+  left: 330px;
   z-index: 4; /* Above both header and body content */
 }
 
@@ -113,19 +113,19 @@
 .table tbody tr td.sticky-column-view:nth-child(2) {
   position: -webkit-sticky; /* For Safari */
   position: sticky;
-  left: 72px;
+  left: 67px;
   z-index: 3; /* Above both header and body content */
 }
 .table tbody tr td.sticky-column-view:nth-child(3) {
   position: -webkit-sticky; /* For Safari */
   position: sticky;
-  left: 216px;
+  left: 200px;
   z-index: 3; /* Above both header and body content */
 }
 .table tbody tr td.sticky-column-view:nth-child(4) {
   position: -webkit-sticky; /* For Safari */
   position: sticky;
-  left: 360px;
+  left: 330px;
   z-index: 3; /* Above both header and body content */
 }
 

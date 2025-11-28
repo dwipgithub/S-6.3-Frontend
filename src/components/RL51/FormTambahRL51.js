@@ -432,7 +432,7 @@ const FormTambahRL51 = () => {
             position: toast.POSITION.TOP_RIGHT,
           });
           setTimeout(() => {
-            navigate("/rl51");
+            navigate("/MENURL51");
             // window.location.reload();
             // navigate(0);
           }, 1000);
