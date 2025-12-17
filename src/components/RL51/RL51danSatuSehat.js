@@ -1730,7 +1730,7 @@ function TabTwo() {
   const { CSRFToken } = useCSRFTokenContext();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(100); // default limit, bisa kamu sesuaikan
+  const [limit, setLimit] = useState(50); // default limit, bisa kamu sesuaikan
   const [totalPages, setTotalPages] = useState(1);
   const [initialDataLoaded, setInitialDataLoaded] = React.useState(false);
   const [masterUmur, setMasterUmur] = React.useState([]);
