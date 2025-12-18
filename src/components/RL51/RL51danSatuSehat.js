@@ -1730,7 +1730,7 @@ function TabTwo() {
   const { CSRFToken } = useCSRFTokenContext();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(100); // default limit, bisa kamu sesuaikan
+  const [limit, setLimit] = useState(20); // default limit, bisa kamu sesuaikan
   const [totalPages, setTotalPages] = useState(1);
   const [initialDataLoaded, setInitialDataLoaded] = React.useState(false);
   const [masterUmur, setMasterUmur] = React.useState([]);
@@ -1913,6 +1913,8 @@ function TabTwo() {
   };
 
   const getPageData = async (requestedPage = 1, requestedLimit = limit) => {
+    setDataRL([]); // 🔥 reset dulu
+
     const config2 = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -2313,7 +2315,7 @@ function TabTwo() {
                     <tr key={item.icd_10} style={{ verticalAlign: "middle" }}>
                       <td style={{ textAlign: "center" }}>
                         {" "}
-                        {idx + 1 + (page - 1) * 100}
+                        {idx + 1 + (page - 1) * limit}
                       </td>
                       <td style={{ textAlign: "center" }}>{item.icd_10}</td>
                       <td>{item.diagnosis}</td>
