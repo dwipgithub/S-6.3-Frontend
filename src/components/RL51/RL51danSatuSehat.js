@@ -1913,6 +1913,8 @@ function TabTwo() {
   };
 
   const getPageData = async (requestedPage = 1, requestedLimit = limit) => {
+    setDataRL([]); // 🔥 reset dulu
+
     const config2 = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -2313,7 +2315,7 @@ function TabTwo() {
                     <tr key={item.icd_10} style={{ verticalAlign: "middle" }}>
                       <td style={{ textAlign: "center" }}>
                         {" "}
-                        {idx + 1 + (page - 1) * 100}
+                        {idx + 1 + (page - 1) * limit}
                       </td>
                       <td style={{ textAlign: "center" }}>{item.icd_10}</td>
                       <td>{item.diagnosis}</td>
