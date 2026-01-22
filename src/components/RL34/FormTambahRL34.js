@@ -11,7 +11,7 @@ import Spinner from "react-bootstrap/Spinner";
 import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const FormTambahRL34 = () => {
-  const [tahun, setTahun] = useState("");
+  const [tahun, setTahun] = useState(2025);
   const [bulan, setBulan] = useState("01");
   const [namaRS, setNamaRS] = useState("");
   const [alamatRS, setAlamatRS] = useState("");
@@ -29,7 +29,7 @@ const FormTambahRL34 = () => {
     refreshToken();
     getRLTigaTitikEmpatTemplate();
     const date = new Date();
-    setTahun(date.getFullYear());
+    // setTahun(date.getFullYear());
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

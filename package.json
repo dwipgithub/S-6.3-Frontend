@@ -1,6 +1,6 @@
 {
   "name": "SIRS",
-  "version": "0.1.2",
+  "version": "0.1.8",
   "private": true,
   "homepage": "/v3",
   "dependencies": {

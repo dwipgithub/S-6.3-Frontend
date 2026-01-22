@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const FormTambahRL314 = () => {
-  const [tahun, setTahun] = useState("2025");
+  const [tahun, setTahun] = useState(2025);
   const [bulan, setBulan] = useState("1");
   const [namaRS, setNamaRS] = useState("");
   const [alamatRS, setAlamatRS] = useState("");
@@ -26,7 +26,7 @@ const FormTambahRL314 = () => {
     refreshToken();
     getRLTigaTitikEmpatBelasTemplate();
     const date = new Date();
-    setTahun(date.getFullYear());
+    // setTahun(date.getFullYear());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

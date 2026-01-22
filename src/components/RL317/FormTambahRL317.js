@@ -86,7 +86,7 @@ const FormTambahRL317 = () => {
       setAlamatRS(response.data.data.alamat);
       setNamaPropinsi(response.data.data.provinsi_nama);
       setNamaKabKota(response.data.data.kab_kota_nama);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const getRLTigaTitikTujuhBelasTemplate = async () => {
@@ -120,7 +120,7 @@ const FormTambahRL317 = () => {
       setDataRL(rlTemplate);
       setSpinner(false);
       // console.log(response.data.data)
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const changeHandlerSingle = (event) => {
@@ -171,59 +171,56 @@ const FormTambahRL317 = () => {
       .map((value, index) => {
         return {
           golonganObatId: value.id,
-          jumlahItemObat: value.jumlahItemObat,
-          jumlahItemObatRs: value.jumlahItemObatRs,
+          jumlahItemObat: Number(value.jumlahItemObat),
+          jumlahItemObatRs: Number(value.jumlahItemObatRs),
         };
       });
+    
+    console.log(dataRLArray);
 
-    let rs1 = dataRL[0].jumlahItemObatRs;
-    let obat1 = dataRL[0].jumlahItemObat;
-    let rs2 = dataRL[1].jumlahItemObatRs;
-    let obat2 = dataRL[1].jumlahItemObat;
-    let rs3 = dataRL[2].jumlahItemObatRs;
-    let obat3 = dataRL[2].jumlahItemObat;
-    let rs4 = dataRL[3].jumlahItemObatRs;
-    let obat4 = dataRL[3].jumlahItemObat;
-    // console.log(dataRL[0].jumlahItemObat);
-    // console.log(dataRL[0].jumlahItemObatRs);
-    if (obat1 >= rs1 && obat2 >= rs2 && obat3 >= rs3 && obat4 >= rs4) {
-      try {
-        const customConfig = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-            "XSRF-TOKEN": CSRFToken,
-          },
-        };
-        await axiosJWT.post(
-          "/apisirs6v2/rltigatitiktujuhbelas",
-          {
-            periodeTahun: parseInt(tahun),
-            data: dataRLArray,
-          },
-          customConfig
-        );
-        setSpinner(false);
-        // console.log(result.data)
-        toast("Data Berhasil Disimpan", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-        setTimeout(() => {
-          navigate("/rl317");
-        }, 1000);
-      } catch (error) {
-        toast(
-          `Data tidak bisa disimpan karena ,${error.response.data.message}`,
-          {
-            position: toast.POSITION.TOP_RIGHT,
-          }
-        );
-        setButtonStatus(false);
-        setSpinner(false);
-      }
-    } else {
+    const isInvalid = dataRLArray.some(
+      item => item.jumlahItemObatRs > item.jumlahItemObat
+    );
+
+    if (isInvalid) {
       toast(
-        `Data Gagal Disimpan, Jumlah Item Obat Di Rumah Sakit tidak boleh lebih besar dari Jumlah Item Obat`,
+        `Data Gagal Disimpan, Jumlah Item Obat Di Rumah Sakit tidak boleh lebih besar dari Jumlah Item Obat-`,
+        {
+          position: toast.POSITION.TOP_RIGHT,
+        }
+      );
+      setButtonStatus(false);
+      setSpinner(false);
+      return; // hentikan proses simpan
+    }
+
+    try {
+      const customConfig = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "XSRF-TOKEN": CSRFToken,
+        },
+      };
+      await axiosJWT.post(
+        "/apisirs6v2/rltigatitiktujuhbelas",
+        {
+          periodeTahun: parseInt(tahun),
+          data: dataRLArray,
+        },
+        customConfig
+      );
+      setSpinner(false);
+      // console.log(result.data)
+      toast("Data Berhasil Disimpan", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      setTimeout(() => {
+        navigate("/rl317");
+      }, 1000);
+    } catch (error) {
+      toast(
+        `Data tidak bisa disimpan karena ,${error.response.data.message}`,
         {
           position: toast.POSITION.TOP_RIGHT,
         }

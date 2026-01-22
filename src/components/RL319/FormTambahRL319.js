@@ -120,6 +120,73 @@ const FormTambahRL319 = () => {
     } catch (error) {}
   };
 
+  // const changeHandler = (event, index) => {
+  //   let newDataRL = [...dataRL];
+  //   const name = event.target.name;
+  //   if (name === "check") {
+  //     if (event.target.checked === true) {
+  //       newDataRL[index].disabledInput = false;
+  //     } else if (event.target.checked === false) {
+  //       newDataRL[index].disabledInput = true;
+  //     }
+  //     newDataRL[index].checked = event.target.checked;
+  //   } else if (name === "ranap_pasien_keluar") {
+  //     if (event.target.value === "") {
+  //       event.target.value = 0;
+  //       event.target.select(event.target.value);
+  //     }
+  //     newDataRL[index].ranap_pasien_keluar = event.target.value;
+  //   } else if (name === "ranap_lama_dirawat") {
+  //     if (event.target.value === "") {
+  //       event.target.value = 0;
+  //       event.target.select(event.target.value);
+  //     }
+
+  //     if (event.target.value > newDataRL[index].ranap_pasien_keluar) {
+  //       toast(
+  //         "Jumlah Lama Dirawat harus lebih kecil dari Jumlah Pasien Keluar",
+  //         {
+  //           position: toast.POSITION.TOP_RIGHT,
+  //         }
+  //       );
+  //     } else {
+  //       newDataRL[index].ranap_lama_dirawat = event.target.value;
+  //     }
+  //   } else if (name === "rajal_lab") {
+  //     if (event.target.value === "") {
+  //       event.target.value = 0;
+  //       event.target.select(event.target.value);
+  //     }
+  //     newDataRL[index].rajal_lab = event.target.value;
+  //     newDataRL[index].jumlah_pasien_rajal =
+  //       parseInt(newDataRL[index].rajal_radiologi) +
+  //       parseInt(event.target.value) +
+  //       parseInt(newDataRL[index].rajal_lain_lain);
+  //   } else if (name === "rajal_radiologi") {
+  //     if (event.target.value === "") {
+  //       event.target.value = 0;
+  //       event.target.select(event.target.value);
+  //     }
+  //     newDataRL[index].rajal_radiologi = event.target.value;
+  //     newDataRL[index].jumlah_pasien_rajal =
+  //       parseInt(newDataRL[index].rajal_lab) +
+  //       parseInt(event.target.value) +
+  //       parseInt(newDataRL[index].rajal_lain_lain);
+  //   } else if (name === "rajal_lain_lain") {
+  //     if (event.target.value === "") {
+  //       event.target.value = 0;
+  //       event.target.select(event.target.value);
+  //     }
+  //     newDataRL[index].rajal_lain_lain = event.target.value;
+  //     newDataRL[index].jumlah_pasien_rajal =
+  //       parseInt(newDataRL[index].rajal_radiologi) +
+  //       parseInt(event.target.value) +
+  //       parseInt(newDataRL[index].rajal_lab);
+  //   }
+
+  //   setDataRL(newDataRL);
+  // };
+
   const changeHandler = (event, index) => {
     let newDataRL = [...dataRL];
     const name = event.target.name;
@@ -142,16 +209,7 @@ const FormTambahRL319 = () => {
         event.target.select(event.target.value);
       }
 
-      if (event.target.value > newDataRL[index].ranap_pasien_keluar) {
-        toast(
-          "Jumlah Lama Dirawat harus lebih kecil dari Jumlah Pasien Keluar",
-          {
-            position: toast.POSITION.TOP_RIGHT,
-          }
-        );
-      } else {
-        newDataRL[index].ranap_lama_dirawat = event.target.value;
-      }
+      newDataRL[index].ranap_lama_dirawat = event.target.value;
     } else if (name === "rajal_lab") {
       if (event.target.value === "") {
         event.target.value = 0;
@@ -186,6 +244,7 @@ const FormTambahRL319 = () => {
 
     setDataRL(newDataRL);
   };
+
 
   const Simpan = async (e) => {
     e.preventDefault();
@@ -634,6 +693,7 @@ const FormTambahRL319 = () => {
                             value={value.jumlah_pasien_rajal}
                             // onChange={(e) => changeHandler(e, index)}
                             // disabled={value.disabledInput}
+                            disabled={true}
                             readOnly={true}
                           />
                         </td>
