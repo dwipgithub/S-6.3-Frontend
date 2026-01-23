@@ -45,13 +45,13 @@ const SSO_Login = () => {
       });
       setExpire(decoded.exp);
     } catch (error) {
-      window.location.replace(
-        "https://akun-yankes.kemkes.go.id/?continued=" + window.location.href
-      );
-
       // window.location.replace(
-      //   "http://192.168.50.86/single-sign-on/?continued=" + window.location.href
+      //   "https://akun-yankes.kemkes.go.id/?continued=" + window.location.href,
       // );
+
+      window.location.replace(
+        process.env.REACT_APP_BASE_SSO + "?continued=" + window.location.href,
+      );
     }
   };
 
@@ -68,26 +68,28 @@ const SSO_Login = () => {
 
     try {
       const results = await axios.get("/apisirs6v2/login?token=" + token);
+      // console.log(results);
       simpanCSRFToken(results.data.data.csrfToken);
       const urlWithoutToken = window.location.href.split("?")[0];
       window.history.replaceState({}, "", urlWithoutToken);
       navigate("/beranda");
     } catch (error) {
       setLoading(false);
-      if ((error.response.status = 404)) {
+      if (error.response && error.response.status === 404) {
         toast("Akun anda Tidak Aktif Silahkan menghubungi Admin", {
           position: toast.POSITION.TOP_RIGHT,
         });
-
         setTimeout(() => {
-          // Setelah delay, arahkan ke halaman lain
-          // window.location.replace("http://192.168.50.86/single-sign-on/");
-          window.location.replace("https://akun-yankes.kemkes.go.id/");
-        }, 2000); // Delay selama 3 detik (3000ms)
+          window.location.replace(process.env.REACT_APP_BASE_SSO);
+          // window.location.replace("https://akun-yankes.kemkes.go.id/");
+        }, 2000);
       } else {
+        // window.location.replace(
+        //   "https://akun-yankes.kemkes.go.id/?continued=" + window.location.href,
+        // );
+
         window.location.replace(
-          "https://akun-yankes.kemkes.go.id/?continued=" +
-            window.location.href
+          process.env.REACT_APP_BASE_SSO + "?continued=" + window.location.href,
         );
       }
     }

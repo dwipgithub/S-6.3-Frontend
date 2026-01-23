@@ -40,8 +40,11 @@ const NavigationBar = () => {
       });
       setExpire(decoded.exp);
     } catch (error) {
-      if (error.response) {
-        navigate("/");
+      // if (error.response) {
+      //   navigate("/");
+      // }
+      if (error.response || error.code === "ERR_NETWORK") {
+        navigate("/"); // redirect kalau gagal ambil token
       }
     }
   };
@@ -66,7 +69,7 @@ const NavigationBar = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   const Logout = async () => {
@@ -79,7 +82,8 @@ const NavigationBar = () => {
       await axios.delete("/apisirs6v2/logout", customConfig);
       localStorage.removeItem("id");
       // navigate('/')
-      window.location.replace("https://akun-yankes.kemkes.go.id/");
+      window.location.replace(process.env.REACT_APP_BASE_SSO);
+      // window.location.replace("https://akun-yankes.kemkes.go.id/");
       // window.location.replace("http://192.168.50.86/single-sign-on/");
     } catch (error) {
       console.log(error);
