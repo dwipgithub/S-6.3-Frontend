@@ -18,6 +18,7 @@ const FormTambahRL319 = () => {
   const [dataRL, setDataRL] = useState([]);
   const [token, setToken] = useState("");
   const [expire, setExpire] = useState("");
+  const [buttonStatus, setButtonStatus] = useState(false);
   const navigate = useNavigate();
   const { CSRFToken } = useCSRFTokenContext();
 
@@ -255,6 +256,7 @@ const FormTambahRL319 = () => {
 
   const Simpan = async (e) => {
     e.preventDefault();
+    setButtonStatus(true);
     try {
       const customConfig = {
         headers: {
@@ -435,6 +437,7 @@ const FormTambahRL319 = () => {
         toast(`Data Gagal Disimpan, ${result.data.message}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
+        setButtonStatus(false);
       }
     } catch (error) {
       console.log(error);
@@ -444,6 +447,7 @@ const FormTambahRL319 = () => {
           position: toast.POSITION.TOP_RIGHT,
         },
       );
+      setButtonStatus(false);
     }
   };
 
@@ -780,7 +784,11 @@ const FormTambahRL319 = () => {
         </div>
         <div className="mt-3 mb-3">
           <ToastContainer />
-          <button type="submit" className="btn btn-outline-success">
+          <button
+            type="submit"
+            className="btn btn-outline-success"
+            disabled={buttonStatus}
+          >
             <HiSaveAs /> Simpan
           </button>
         </div>
