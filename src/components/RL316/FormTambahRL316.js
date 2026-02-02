@@ -24,6 +24,14 @@ const FormTambahRL316 = () => {
   const navigate = useNavigate();
   const { CSRFToken } = useCSRFTokenContext();
 
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear(); // sekarang 2026
+
+  const years = [];
+  for (let y = startYear; y <= currentYear; y++) {
+    years.push(y);
+  }
+
   useEffect(() => {
     refreshToken();
     getRLTigaTitikEnamBelasTemplate();
@@ -71,7 +79,7 @@ const FormTambahRL316 = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   const getRumahSakit = async (id) => {
@@ -98,7 +106,7 @@ const FormTambahRL316 = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const rlTemplate = response.data.data.map((value, index) => {
@@ -194,10 +202,10 @@ const FormTambahRL316 = () => {
           return {
             JenisPelayananKeluargaBerencanaId: value.id,
             pelayananKbPaskaPersalinan: parseInt(
-              value.pelayananKbPaskaPersalinan
+              value.pelayananKbPaskaPersalinan,
             ),
             pelayananKbPaskaKeguguran: parseInt(
-              value.pelayananKbPaskaKeguguran
+              value.pelayananKbPaskaKeguguran,
             ),
             pelayananKbInterval: parseInt(value.pelayananKbInterval),
             komplikasiKB: parseInt(value.komplikasiKB),
@@ -223,7 +231,7 @@ const FormTambahRL316 = () => {
           tahun: parseInt(tahun),
           data: dataRLArray,
         },
-        customConfig
+        customConfig,
       );
 
       toast("Data Berhasil Disimpan", {
@@ -263,7 +271,7 @@ const FormTambahRL316 = () => {
     if (object.target.value.length > object.target.maxLength) {
       object.target.value = object.target.value.slice(
         0,
-        object.target.maxLength
+        object.target.maxLength,
       );
     }
   };
@@ -342,7 +350,7 @@ const FormTambahRL316 = () => {
                   className="form-floating"
                   style={{ width: "100%", display: "inline-block" }}
                 >
-                  <input
+                  {/* <input
                     name="tahun"
                     type="text"
                     className="form-control"
@@ -351,7 +359,24 @@ const FormTambahRL316 = () => {
                     value={tahun}
                     disabled
                     onChange={(e) => changeHandlerSingle(e)}
-                  />
+                  /> */}
+
+                  <select
+                    name="tahun"
+                    className="form-select"
+                    id="tahun"
+                    value={tahun}
+                    onChange={(e) => setTahun(e.target.value)}
+                  >
+                    <option value="">Pilih Tahun</option>
+
+                    {years.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
+                  </select>
+
                   <label htmlFor="floatingInput">Tahun</label>
                 </div>
               </div>
