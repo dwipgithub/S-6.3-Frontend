@@ -25,6 +25,14 @@ const FormTambahRL310 = () => {
   const [dataRL, setDataRL] = useState([]);
   const { CSRFToken } = useCSRFTokenContext();
 
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear(); // sekarang 2026
+
+  const years = [];
+  for (let y = startYear; y <= currentYear; y++) {
+    years.push(y);
+  }
+
   useEffect(() => {
     refreshToken();
     getRLTigaTitikTigaTemplate();
@@ -140,7 +148,7 @@ const FormTambahRL310 = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   const getDataRS = async (id) => {
@@ -165,7 +173,7 @@ const FormTambahRL310 = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       console.log(response);
@@ -324,16 +332,16 @@ const FormTambahRL310 = () => {
             rm_diterima_faskes_lain: parseInt(value.rm_diterima_faskes_lain),
             rm_diterima_total_rm: parseInt(value.rm_diterima_total_rm),
             rm_dikembalikan_puskesmas: parseInt(
-              value.rm_dikembalikan_puskesmas
+              value.rm_dikembalikan_puskesmas,
             ),
             rm_dikembalikan_rs: parseInt(value.rm_dikembalikan_rs),
             rm_dikembalikan_faskes_lain: parseInt(
-              value.rm_dikembalikan_faskes_lain
+              value.rm_dikembalikan_faskes_lain,
             ),
             rm_dikembalikan_total_rm: parseInt(value.rm_dikembalikan_total_rm),
             keluar_pasien_rujukan: parseInt(value.keluar_pasien_rujukan),
             keluar_pasien_datang_sendiri: parseInt(
-              value.keluar_pasien_datang_sendiri
+              value.keluar_pasien_datang_sendiri,
             ),
             keluar_total_keluar: parseInt(value.keluar_total_keluar),
             keluar_diterima_kembali: parseInt(value.keluar_diterima_kembali),
@@ -354,7 +362,7 @@ const FormTambahRL310 = () => {
           bulan: parseInt(bulan),
           data: dataRLArray,
         },
-        customConfig
+        customConfig,
       );
 
       if (result.status === 201) {
@@ -490,7 +498,7 @@ const FormTambahRL310 = () => {
                   className="form-floating"
                   style={{ width: "50%", display: "inline-block" }}
                 >
-                  <input
+                  {/* <input
                     name="tahun"
                     type="number"
                     className="form-control"
@@ -498,7 +506,23 @@ const FormTambahRL310 = () => {
                     placeholder="Tahun"
                     value={tahun}
                     onChange={(e) => setTahun(e.target.value)}
-                  />
+                  /> */}
+
+                  <select
+                    name="tahun"
+                    className="form-select"
+                    id="tahun"
+                    value={tahun}
+                    onChange={(e) => setTahun(e.target.value)}
+                  >
+                    <option value="">Pilih Tahun</option>
+
+                    {years.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
+                  </select>
                   <label htmlFor="tahun">Tahun</label>
                 </div>
               </div>

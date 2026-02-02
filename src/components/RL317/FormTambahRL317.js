@@ -25,6 +25,14 @@ const FormTambahRL317 = () => {
   const navigate = useNavigate();
   const { CSRFToken } = useCSRFTokenContext();
 
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear(); // sekarang 2026
+
+  const years = [];
+  for (let y = startYear; y <= currentYear; y++) {
+    years.push(y);
+  }
+
   useEffect(() => {
     refreshToken();
     getRLTigaTitikTujuhBelasTemplate();
@@ -72,7 +80,7 @@ const FormTambahRL317 = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   const getRumahSakit = async (id) => {
@@ -86,7 +94,7 @@ const FormTambahRL317 = () => {
       setAlamatRS(response.data.data.alamat);
       setNamaPropinsi(response.data.data.provinsi_nama);
       setNamaKabKota(response.data.data.kab_kota_nama);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const getRLTigaTitikTujuhBelasTemplate = async () => {
@@ -98,7 +106,7 @@ const FormTambahRL317 = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const rlTemplate = response.data.data.map((value, index) => {
@@ -120,7 +128,7 @@ const FormTambahRL317 = () => {
       setDataRL(rlTemplate);
       setSpinner(false);
       // console.log(response.data.data)
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const changeHandlerSingle = (event) => {
@@ -175,11 +183,11 @@ const FormTambahRL317 = () => {
           jumlahItemObatRs: Number(value.jumlahItemObatRs),
         };
       });
-    
+
     console.log(dataRLArray);
 
     const isInvalid = dataRLArray.some(
-      item => item.jumlahItemObatRs > item.jumlahItemObat
+      (item) => item.jumlahItemObatRs > item.jumlahItemObat,
     );
 
     if (isInvalid) {
@@ -187,7 +195,7 @@ const FormTambahRL317 = () => {
         `Data Gagal Disimpan, Jumlah Item Obat Di Rumah Sakit tidak boleh lebih besar dari Jumlah Item Obat-`,
         {
           position: toast.POSITION.TOP_RIGHT,
-        }
+        },
       );
       setButtonStatus(false);
       setSpinner(false);
@@ -208,7 +216,7 @@ const FormTambahRL317 = () => {
           periodeTahun: parseInt(tahun),
           data: dataRLArray,
         },
-        customConfig
+        customConfig,
       );
       setSpinner(false);
       // console.log(result.data)
@@ -219,12 +227,9 @@ const FormTambahRL317 = () => {
         navigate("/rl317");
       }, 1000);
     } catch (error) {
-      toast(
-        `Data tidak bisa disimpan karena ,${error.response.data.message}`,
-        {
-          position: toast.POSITION.TOP_RIGHT,
-        }
-      );
+      toast(`Data tidak bisa disimpan karena ,${error.response.data.message}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
       setButtonStatus(false);
       setSpinner(false);
     }
@@ -248,7 +253,7 @@ const FormTambahRL317 = () => {
     if (object.target.value.length > object.target.maxLength) {
       object.target.value = object.target.value.slice(
         0,
-        object.target.maxLength
+        object.target.maxLength,
       );
     }
   };
@@ -327,7 +332,7 @@ const FormTambahRL317 = () => {
                   className="form-floating"
                   style={{ width: "100%", display: "inline-block" }}
                 >
-                  <input
+                  {/* <input
                     name="tahun"
                     type="text"
                     className="form-control"
@@ -336,7 +341,24 @@ const FormTambahRL317 = () => {
                     value={tahun}
                     onChange={(e) => changeHandlerSingle(e)}
                     disabled
-                  />
+                  /> */}
+
+                  <select
+                    name="tahun"
+                    className="form-select"
+                    id="tahun"
+                    value={tahun}
+                    onChange={(e) => setTahun(e.target.value)}
+                  >
+                    <option value="">Pilih Tahun</option>
+
+                    {years.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
+                  </select>
+
                   <label htmlFor="floatingInput">Tahun</label>
                 </div>
               </div>

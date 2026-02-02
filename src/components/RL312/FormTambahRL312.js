@@ -25,6 +25,14 @@ const FormTambahRL312 = () => {
   const navigate = useNavigate();
   const { CSRFToken } = useCSRFTokenContext();
 
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear(); // sekarang 2026
+
+  const years = [];
+  for (let y = startYear; y <= currentYear; y++) {
+    years.push(y);
+  }
+
   useEffect(() => {
     refreshToken();
     getRLTigaTitikDuaBelasTemplate();
@@ -128,7 +136,7 @@ const FormTambahRL312 = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   const getRumahSakit = async (id) => {
@@ -154,7 +162,7 @@ const FormTambahRL312 = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const rlTemplate = response.data.data.map((value, index) => {
@@ -250,7 +258,7 @@ const FormTambahRL312 = () => {
           periodeTahun: parseInt(tahun),
           data: dataRLArray,
         },
-        customConfig
+        customConfig,
       );
 
       toast("Data Berhasil Disimpan", {
@@ -290,7 +298,7 @@ const FormTambahRL312 = () => {
     if (object.target.value.length > object.target.maxLength) {
       object.target.value = object.target.value.slice(
         0,
-        object.target.maxLength
+        object.target.maxLength,
       );
     }
   };
@@ -413,7 +421,7 @@ const FormTambahRL312 = () => {
                   className="form-floating"
                   style={{ width: "50%", display: "inline-block" }}
                 >
-                  <input
+                  {/* <input
                     name="tahun"
                     type="number"
                     className="form-control"
@@ -422,7 +430,24 @@ const FormTambahRL312 = () => {
                     value={tahun}
                     onChange={(e) => changeHandlerSingle(e)}
                     disabled={false}
-                  />
+                  /> */}
+
+                  <select
+                    name="tahun"
+                    className="form-select"
+                    id="tahun"
+                    value={tahun}
+                    onChange={(e) => setTahun(e.target.value)}
+                  >
+                    <option value="">Pilih Tahun</option>
+
+                    {years.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
+                  </select>
+
                   <label>Tahun</label>
                 </div>
               </div>

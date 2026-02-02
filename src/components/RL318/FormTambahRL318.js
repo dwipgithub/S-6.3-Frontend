@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { useNavigate, Link } from "react-router-dom";
-import style from "./FormTambahRL318.module.css";
+import style from "./FormTambahRL318.module.css"; // Pastikan file ini ada
 import { HiSaveAs } from "react-icons/hi";
-import { IoArrowBack } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Table from "react-bootstrap/esm/Table";
@@ -25,31 +24,28 @@ const FormTambahRL318 = () => {
   const navigate = useNavigate();
   const { CSRFToken } = useCSRFTokenContext();
 
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let y = startYear; y <= currentYear; y++) {
+    years.push(y);
+  }
+
   useEffect(() => {
     refreshToken();
-    // getDataRS()
     getRLTigaTitikDelapanBelasTemplate();
-    // const date = new Date();
-    // setTahun(date.getFullYear() - 1)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const refreshToken = async () => {
     try {
-      const customConfig = {
-        headers: {
-          "XSRF-TOKEN": CSRFToken,
-        },
-      };
+      const customConfig = { headers: { "XSRF-TOKEN": CSRFToken } };
       const response = await axios.get("/apisirs6v2/token", customConfig);
       setToken(response.data.accessToken);
       const decoded = jwt_decode(response.data.accessToken);
       setExpire(decoded.exp);
       getRumahSakit(decoded.satKerId);
     } catch (error) {
-      if (error.response) {
-        navigate("/");
-      }
+      if (error.response) navigate("/");
     }
   };
 
@@ -58,11 +54,7 @@ const FormTambahRL318 = () => {
     async (config) => {
       const currentDate = new Date();
       if (expire * 1000 < currentDate.getTime()) {
-        const customConfig = {
-          headers: {
-            "XSRF-TOKEN": CSRFToken,
-          },
-        };
+        const customConfig = { headers: { "XSRF-TOKEN": CSRFToken } };
         const response = await axios.get("/apisirs6v2/token", customConfig);
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
@@ -71,17 +63,13 @@ const FormTambahRL318 = () => {
       }
       return config;
     },
-    (error) => {
-      return Promise.reject(error);
-    }
+    (error) => Promise.reject(error),
   );
 
   const getRumahSakit = async (id) => {
     try {
       const response = await axiosJWT.get("/apisirs6v2/rumahsakit/" + id, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setNamaRS(response.data.data.nama);
       setAlamatRS(response.data.data.alamat);
@@ -96,73 +84,36 @@ const FormTambahRL318 = () => {
       const response = await axiosJWT.get(
         "/apisirs6v2/rltigatitikdelapanbelasgolonganobat",
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+          headers: { Authorization: `Bearer ${token}` },
+        },
       );
 
-      const rlTemplate = response.data.data.map((value, index) => {
-        return {
-          id: value.id,
-          kodeProvinsi: 0,
-          kabKota: 0,
-          kodeRS: 0,
-          namaRS: 0,
-          tahun: 0,
-          no: value.no,
-          golonganObat: value.nama,
-          rawatJalan: 0,
-          igd: 0,
-          rawatInap: 0,
-          disabledInput: true,
-          checked: false,
-        };
-      });
+      const rlTemplate = response.data.data.map((value) => ({
+        id: value.id,
+        no: value.no,
+        golonganObat: value.nama,
+        rawatJalan: 0,
+        igd: 0,
+        rawatInap: 0,
+        disabledInput: true,
+        checked: false,
+      }));
       setDataRL(rlTemplate);
       setSpinner(false);
-      console.log(response.data.data);
-    } catch (error) {}
+    } catch (error) {
+      setSpinner(false);
+    }
   };
-
-  const changeHandlerSingle = (event) => {
-    setTahun(event.target.value);
-  };
-
-  const handleFocus = (event) => event.target.select();
 
   const changeHandler = (event, index) => {
     let newDataRL = [...dataRL];
-    const name = event.target.name;
+    const { name, value, checked, type } = event.target;
+
     if (name === "check") {
-      if (event.target.checked === true) {
-        newDataRL[index].disabledInput = false;
-      } else if (event.target.checked === false) {
-        newDataRL[index].disabledInput = true;
-      }
-      newDataRL[index].checked = event.target.checked;
-    } else if (name === "no") {
-      newDataRL[index].no = event.target.value;
-    } else if (name === "golonganObat") {
-      newDataRL[index].golonganObat = event.target.value;
-    } else if (name === "rawatJalan") {
-      if (event.target.value === "") {
-        event.target.value = 0;
-        event.target.select(event.target.value);
-      }
-      newDataRL[index].rawatJalan = event.target.value;
-    } else if (name === "igd") {
-      if (event.target.value === "") {
-        event.target.value = 0;
-        event.target.select(event.target.value);
-      }
-      newDataRL[index].igd = event.target.value;
-    } else if (name === "rawatInap") {
-      if (event.target.value === "") {
-        event.target.value = 0;
-        event.target.select(event.target.value);
-      }
-      newDataRL[index].rawatInap = event.target.value;
+      newDataRL[index].disabledInput = !checked;
+      newDataRL[index].checked = checked;
+    } else {
+      newDataRL[index][name] = value === "" ? 0 : value;
     }
     setDataRL(newDataRL);
   };
@@ -173,17 +124,13 @@ const FormTambahRL318 = () => {
     setButtonStatus(true);
     try {
       const dataRLArray = dataRL
-        .filter((value) => {
-          return value.checked === true;
-        })
-        .map((value, index) => {
-          return {
-            golonganObatId: value.id,
-            rawatJalan: value.rawatJalan,
-            igd: value.igd,
-            rawatInap: value.rawatInap,
-          };
-        });
+        .filter((v) => v.checked)
+        .map((v) => ({
+          golonganObatId: v.id,
+          rawatJalan: parseInt(v.rawatJalan),
+          igd: parseInt(v.igd),
+          rawatInap: parseInt(v.rawatInap),
+        }));
 
       const customConfig = {
         headers: {
@@ -198,345 +145,174 @@ const FormTambahRL318 = () => {
           periodeTahun: parseInt(tahun),
           data: dataRLArray,
         },
-        customConfig
+        customConfig,
       );
+
       setSpinner(false);
-      // console.log(result.data)
-      toast("Data Berhasil Disimpan", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      setTimeout(() => {
-        navigate("/rl318");
-      }, 1000);
+      toast.success("Data Berhasil Disimpan");
+      setTimeout(() => navigate("/rl318"), 1000);
     } catch (error) {
-      toast(`Data tidak bisa disimpan karena ,${error.response.data.message}`, {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.error(
+        `Gagal simpan: ${error.response?.data?.message || error.message}`,
+      );
       setButtonStatus(false);
       setSpinner(false);
-    }
-  };
-  const preventPasteNegative = (e) => {
-    const clipboardData = e.clipboardData || window.clipboardData;
-    const pastedData = parseFloat(clipboardData.getData("text"));
-
-    if (pastedData < 0) {
-      e.preventDefault();
-    }
-  };
-
-  const preventMinus = (e) => {
-    if (e.code === "Minus") {
-      e.preventDefault();
-    }
-  };
-  const maxLengthCheck = (object) => {
-    if (object.target.value.length > object.target.maxLength) {
-      object.target.value = object.target.value.slice(
-        0,
-        object.target.maxLength
-      );
     }
   };
 
   return (
     <div
       className="container"
-      style={{ marginTop: "70px", marginBottom: "70px" }}
+      style={{ marginTop: "80px", marginBottom: "50px" }}
     >
       <form onSubmit={Simpan}>
-        <div className="row">
+        <div className="row g-3">
           <div className="col-md-6">
-            <div className="card">
+            <div className="card shadow-sm border-0">
               <div className="card-body">
-                <h5 className="card-title h5">Profile Fasyankes</h5>
-                <div
-                  className="form-floating"
-                  style={{ width: "100%", display: "inline-block" }}
-                >
+                <h6 className="fw-bold mb-3 text-secondary">
+                  Profile Fasyankes
+                </h6>
+                <div className="form-floating mb-2">
                   <input
                     type="text"
                     className="form-control"
-                    id="floatingInput"
                     value={namaRS}
-                    disabled={true}
-                  />
-                  <label htmlFor="floatingInput">Nama</label>
-                </div>
-                <div
-                  className="form-floating"
-                  style={{ width: "100%", display: "inline-block" }}
-                >
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="floatingInput"
-                    value={alamatRS}
-                    disabled={true}
-                  />
-                  <label htmlFor="floatingInput">Alamat</label>
-                </div>
-                <div
-                  className="form-floating"
-                  style={{ width: "50%", display: "inline-block" }}
-                >
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="floatingInput"
-                    value={namaPropinsi}
-                    disabled={true}
-                  />
-                  <label htmlFor="floatingInput">Provinsi </label>
-                </div>
-                <div
-                  className="form-floating"
-                  style={{ width: "50%", display: "inline-block" }}
-                >
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="floatingInput"
-                    value={namaKabKota}
-                    disabled={true}
-                  />
-                  <label htmlFor="floatingInput">Kab/Kota</label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title h5">Periode Laporan</h5>
-                <div
-                  className="form-floating"
-                  style={{ width: "100%", display: "inline-block" }}
-                >
-                  <input
-                    name="tahun"
-                    type="text"
-                    className="form-control"
-                    id="floatingInput"
-                    placeholder="Tahun"
-                    value={tahun}
-                    onChange={(e) => changeHandlerSingle(e)}
                     disabled
                   />
-                  <label htmlFor="floatingInput">Tahun</label>
+                  <label>Nama Rumah Sakit</label>
+                </div>
+                <div className="form-floating">
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={alamatRS}
+                    disabled
+                  />
+                  <label>Alamat</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card shadow-sm border-0">
+              <div className="card-body">
+                <h6 className="fw-bold mb-3 text-secondary">Periode Laporan</h6>
+                <div className="form-floating">
+                  <select
+                    className="form-select"
+                    value={tahun}
+                    onChange={(e) => setTahun(e.target.value)}
+                  >
+                    <option value="">Pilih Tahun</option>
+                    {years.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
+                  </select>
+                  <label>Tahun Pelaporan</label>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="row mt-3">
+
+        <div className="row mt-4">
           <div className="col-md-12">
-            <Link
-              to={`/rl318/`}
-              className="btn btn-info"
-              style={{
-                fontSize: "18px",
-                backgroundColor: "#779D9E",
-                color: "#FFFFFF",
-              }}
-            >
-              {/* <IoArrowBack size={30} style={{color:"gray",cursor: "pointer"}}/><span style={{color: "gray"}}></span> */}
-              &lt;
-            </Link>
-            <span style={{ color: "gray" }}>RL 3.18 Farmasi Resep</span>
-
-            <div className="container" style={{ textAlign: "center" }}>
-              {spinner && (
-                <Spinner animation="grow" variant="success"></Spinner>
-              )}
-              {spinner && (
-                <Spinner animation="grow" variant="success"></Spinner>
-              )}
-              {spinner && (
-                <Spinner animation="grow" variant="success"></Spinner>
-              )}
-              {spinner && (
-                <Spinner animation="grow" variant="success"></Spinner>
-              )}
-              {spinner && (
-                <Spinner animation="grow" variant="success"></Spinner>
-              )}
-              {spinner && (
-                <Spinner animation="grow" variant="success"></Spinner>
-              )}
+            <div className="d-flex align-items-center mb-3">
+              <Link to="/rl318" className="btn btn-light shadow-sm me-3">
+                &larr;
+              </Link>
+              <h5 className="mb-0 text-dark">RL 3.18 Farmasi Resep</h5>
             </div>
-            <Table className={style.rlTable}>
-              <thead>
-                <tr>
-                  <th>No Golongan Obat</th>
-                  <th style={{ width: "2%" }}></th>
-                  <th>Golongan Obat</th>
-                  <th>Rawat Jalan</th>
-                  <th>IGD</th>
-                  <th>Rawat Inap</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataRL.map((value, index) => {
-                  if (value.no === "0") {
-                    let disabledInput = true;
-                    return (
-                      <tr key={value.id}>
-                        <td>
-                          <center>{value.no}</center>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "center",
-                            verticalAlign: "middle",
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="check"
-                            className="form-check-input"
-                            onChange={(e) => changeHandler(e, index)}
-                            checked={value.checked}
-                          />
-                        </td>
-                        <td>{value.golonganObat}</td>
 
-                        <td>
-                          <input
-                            type="number"
-                            min={0}
-                            maxLength={7}
-                            onInput={(e) => maxLengthCheck(e)}
-                            name="rawatJalan"
-                            className="form-control"
-                            value={value.rawatJalan}
-                            onFocus={handleFocus}
-                            onChange={(e) => changeHandler(e, index)}
-                            disabled={true}
-                            onPaste={preventPasteNegative}
-                            onKeyPress={preventMinus}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                            min={0}
-                            maxLength={7}
-                            onInput={(e) => maxLengthCheck(e)}
-                            name="igd"
-                            className="form-control"
-                            value={value.igd}
-                            onFocus={handleFocus}
-                            onChange={(e) => changeHandler(e, index)}
-                            disabled={true}
-                            onPaste={preventPasteNegative}
-                            onKeyPress={preventMinus}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                            min={0}
-                            maxLength={7}
-                            onInput={(e) => maxLengthCheck(e)}
-                            name="rawatInap"
-                            className="form-control"
-                            value={value.rawatInap}
-                            onFocus={handleFocus}
-                            onChange={(e) => changeHandler(e, index)}
-                            disabled={true}
-                            onPaste={preventPasteNegative}
-                            onKeyPress={preventMinus}
-                          />
-                        </td>
-                      </tr>
-                    );
-                  } else {
-                    return (
-                      <tr key={value.id}>
-                        <td>
-                          <center>{value.no}</center>
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "center",
-                            verticalAlign: "middle",
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="check"
-                            className="form-check-input"
-                            onChange={(e) => changeHandler(e, index)}
-                            checked={value.checked}
-                          />
-                        </td>
-                        <td>{value.golonganObat}</td>
+            {spinner && (
+              <div className="text-center my-3">
+                <Spinner animation="border" variant="primary" />
+              </div>
+            )}
 
-                        <td>
-                          <input
-                            type="number"
-                            min={0}
-                            maxLength={7}
-                            onInput={(e) => maxLengthCheck(e)}
-                            name="rawatJalan"
-                            className="form-control"
-                            value={value.rawatJalan}
-                            onFocus={handleFocus}
-                            onChange={(e) => changeHandler(e, index)}
-                            disabled={value.disabledInput}
-                            onPaste={preventPasteNegative}
-                            onKeyPress={preventMinus}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                            min={0}
-                            maxLength={7}
-                            onInput={(e) => maxLengthCheck(e)}
-                            name="igd"
-                            className="form-control"
-                            value={value.igd}
-                            onFocus={handleFocus}
-                            onChange={(e) => changeHandler(e, index)}
-                            disabled={value.disabledInput}
-                            onPaste={preventPasteNegative}
-                            onKeyPress={preventMinus}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                            min={0}
-                            maxLength={7}
-                            onInput={(e) => maxLengthCheck(e)}
-                            name="rawatInap"
-                            className="form-control"
-                            value={value.rawatInap}
-                            onFocus={handleFocus}
-                            onChange={(e) => changeHandler(e, index)}
-                            disabled={value.disabledInput}
-                            onPaste={preventPasteNegative}
-                            onKeyPress={preventMinus}
-                          />
-                        </td>
-                      </tr>
-                    );
-                  }
-                })}
-              </tbody>
-            </Table>
+            <div className={style["table-container"]}>
+              <Table className={style.table}>
+                <thead>
+                  <tr>
+                    <th style={{ width: "80px" }}>No</th>
+                    <th style={{ width: "50px" }}>Pilih</th>
+                    <th>Golongan Obat</th>
+                    <th>Rawat Jalan</th>
+                    <th>IGD</th>
+                    <th>Rawat Inap</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataRL.map((value, index) => (
+                    <tr key={value.id}>
+                      <td className="text-center">{value.no}</td>
+                      <td className="text-center">
+                        <input
+                          type="checkbox"
+                          name="check"
+                          className="form-check-input"
+                          onChange={(e) => changeHandler(e, index)}
+                          checked={value.checked}
+                        />
+                      </td>
+                      <td className={style["sticky-column"]}>
+                        {value.golonganObat}
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="rawatJalan"
+                          className="form-control text-center"
+                          value={value.rawatJalan}
+                          onChange={(e) => changeHandler(e, index)}
+                          disabled={
+                            value.no === "0" ? true : value.disabledInput
+                          }
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="igd"
+                          className="form-control text-center"
+                          value={value.igd}
+                          onChange={(e) => changeHandler(e, index)}
+                          disabled={
+                            value.no === "0" ? true : value.disabledInput
+                          }
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="rawatInap"
+                          className="form-control text-center"
+                          value={value.rawatInap}
+                          onChange={(e) => changeHandler(e, index)}
+                          disabled={
+                            value.no === "0" ? true : value.disabledInput
+                          }
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
           </div>
         </div>
-        <div className="mt-3 mb-3">
+
+        <div className="mt-4">
           <ToastContainer />
           <button
             type="submit"
-            className="btn btn-outline-success"
+            className="btn btn-success px-4 py-2"
             disabled={buttonStatus}
           >
-            <HiSaveAs /> Simpan
+            <HiSaveAs className="me-2" /> Simpan Data
           </button>
         </div>
       </form>
