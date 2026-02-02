@@ -21,6 +21,14 @@ const FormTambahRL319 = () => {
   const navigate = useNavigate();
   const { CSRFToken } = useCSRFTokenContext();
 
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear(); // sekarang 2026
+
+  const years = [];
+  for (let y = startYear; y <= currentYear; y++) {
+    years.push(y);
+  }
+
   useEffect(() => {
     refreshToken();
     getRLTigaTitikSembilanBelasTemplate();
@@ -68,7 +76,7 @@ const FormTambahRL319 = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   const getDataRS = async (id) => {
@@ -94,7 +102,7 @@ const FormTambahRL319 = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const rlTemplate = response.data.data
@@ -245,7 +253,6 @@ const FormTambahRL319 = () => {
     setDataRL(newDataRL);
   };
 
-
   const Simpan = async (e) => {
     e.preventDefault();
     try {
@@ -293,7 +300,7 @@ const FormTambahRL319 = () => {
             tahun: parseInt(tahun),
             specificId: 2,
           },
-        }
+        },
       );
 
       dataRL
@@ -302,11 +309,11 @@ const FormTambahRL319 = () => {
         })
         .map((value, index) => {
           asuransiData.ranap_pasien_keluar += parseInt(
-            value.ranap_pasien_keluar
+            value.ranap_pasien_keluar,
           );
           asuransiData.ranap_lama_dirawat += parseInt(value.ranap_lama_dirawat);
           asuransiData.jumlah_pasien_rajal += parseInt(
-            value.jumlah_pasien_rajal
+            value.jumlah_pasien_rajal,
           );
           asuransiData.rajal_lab += parseInt(value.rajal_lab);
           asuransiData.rajal_radiologi += parseInt(value.rajal_radiologi);
@@ -315,27 +322,27 @@ const FormTambahRL319 = () => {
 
       if (getAsuransiData.data.data != null) {
         asuransiData.ranap_pasien_keluar += parseInt(
-          getAsuransiData.data.data.ranap_pasien_keluar
+          getAsuransiData.data.data.ranap_pasien_keluar,
         );
         asuransiData.ranap_lama_dirawat += parseInt(
-          getAsuransiData.data.data.ranap_lama_dirawat
+          getAsuransiData.data.data.ranap_lama_dirawat,
         );
         asuransiData.jumlah_pasien_rajal += parseInt(
-          getAsuransiData.data.data.jumlah_pasien_rajal
+          getAsuransiData.data.data.jumlah_pasien_rajal,
         );
         asuransiData.rajal_lab += parseInt(getAsuransiData.data.data.rajal_lab);
         asuransiData.rajal_radiologi += parseInt(
-          getAsuransiData.data.data.rajal_radiologi
+          getAsuransiData.data.data.rajal_radiologi,
         );
         asuransiData.rajal_lain_lain += parseInt(
-          getAsuransiData.data.data.rajal_lain_lain
+          getAsuransiData.data.data.rajal_lain_lain,
         );
 
         await axiosJWT.patch(
           "/apisirs6v2/rltigatitiksembilanbelasdetail/" +
             getAsuransiData.data.data.id,
           asuransiData,
-          customConfig
+          customConfig,
         );
       } else {
         asuransiData.golonganObatTigaTitikSembilanBelasId = 2;
@@ -362,7 +369,7 @@ const FormTambahRL319 = () => {
             tahun: parseInt(tahun),
             specificId: 8,
           },
-        }
+        },
       );
 
       dataRL
@@ -380,27 +387,27 @@ const FormTambahRL319 = () => {
 
       if (getGratisData.data.data != null) {
         gratisData.ranap_pasien_keluar += parseInt(
-          getGratisData.data.data.ranap_pasien_keluar
+          getGratisData.data.data.ranap_pasien_keluar,
         );
         gratisData.ranap_lama_dirawat += parseInt(
-          getGratisData.data.data.ranap_lama_dirawat
+          getGratisData.data.data.ranap_lama_dirawat,
         );
         gratisData.jumlah_pasien_rajal += parseInt(
-          getGratisData.data.data.jumlah_pasien_rajal
+          getGratisData.data.data.jumlah_pasien_rajal,
         );
         gratisData.rajal_lab += parseInt(getGratisData.data.data.rajal_lab);
         gratisData.rajal_radiologi += parseInt(
-          getGratisData.data.data.rajal_radiologi
+          getGratisData.data.data.rajal_radiologi,
         );
         gratisData.rajal_lain_lain += parseInt(
-          getGratisData.data.data.rajal_lain_lain
+          getGratisData.data.data.rajal_lain_lain,
         );
 
         await axiosJWT.patch(
           "/apisirs6v2/rltigatitiksembilanbelasdetail/" +
             getGratisData.data.data.id,
           gratisData,
-          customConfig
+          customConfig,
         );
       } else {
         gratisData.golonganObatTigaTitikSembilanBelasId = 8;
@@ -413,7 +420,7 @@ const FormTambahRL319 = () => {
           tahun: parseInt(tahun),
           data: dataRLArray,
         },
-        customConfig
+        customConfig,
       );
 
       if (result.status === 201) {
@@ -435,7 +442,7 @@ const FormTambahRL319 = () => {
         `Data tidak bisa disimpan karena ,${error.response.data.message.name}`,
         {
           position: toast.POSITION.TOP_RIGHT,
-        }
+        },
       );
     }
   };
@@ -459,7 +466,7 @@ const FormTambahRL319 = () => {
     if (object.target.value.length > object.target.maxLength) {
       object.target.value = object.target.value.slice(
         0,
-        object.target.maxLength
+        object.target.maxLength,
       );
     }
   };
@@ -529,7 +536,7 @@ const FormTambahRL319 = () => {
           </div>
           <div className="col-md-6">
             <div className="card">
-              <div className="card-body">
+              {/* <div className="card-body">
                 <h5 className="card-title h5">Periode Laporan</h5>
                 <div
                   className="form-floating"
@@ -548,6 +555,30 @@ const FormTambahRL319 = () => {
                     onInput={(e) => maxLengthCheck(e)}
                     onPaste={preventPasteNegative}
                   />
+                  <label htmlFor="tahun">Tahun</label>
+                </div>
+              </div> */}
+
+              <div className="card-body">
+                <h5 className="card-title h5">Periode Laporan</h5>
+
+                <div className="form-floating" style={{ width: "100%" }}>
+                  <select
+                    name="tahun"
+                    className="form-select"
+                    id="tahun"
+                    value={tahun}
+                    onChange={(e) => setTahun(e.target.value)}
+                  >
+                    <option value="">Pilih Tahun</option>
+
+                    {years.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
+                  </select>
+
                   <label htmlFor="tahun">Tahun</label>
                 </div>
               </div>
