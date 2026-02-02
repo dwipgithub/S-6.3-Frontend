@@ -376,6 +376,13 @@ const FormTambahRL35 = () => {
     }
   };
 
+  const currentYear = new Date().getFullYear();
+  const daftarTahun = [];
+  for (let i = 2025; i <= currentYear; i++) {
+    daftarTahun.push(i);
+  }
+
+
   return (
     <div
       className="container"
@@ -450,17 +457,20 @@ const FormTambahRL35 = () => {
                   className="form-floating"
                   style={{ width: "100%", display: "inline-block" }}
                 >
-                  <input
+                  <select
                     name="tahun"
-                    type="number"
                     className="form-control"
                     id="floatingInput"
-                    min="2024"
-                    placeholder="Tahun"
                     value={tahun}
-                    disabled={true}
                     onChange={(e) => changeHandlerSingle(e)}
-                  />
+                  >
+                    {daftarTahun.map((tahun) => (
+                      <option key={tahun} value={tahun}>
+                        {tahun}
+                      </option>
+                    ))}
+                  </select>
+
                 </div>
                 <div
                   className="form-floating"
