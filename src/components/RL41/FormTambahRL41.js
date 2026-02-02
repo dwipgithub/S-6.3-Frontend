@@ -29,6 +29,14 @@ const FormTambahRL41 = () => {
   const navigate = useNavigate();
   const { CSRFToken } = useCSRFTokenContext();
 
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear(); // sekarang 2026
+
+  const years = [];
+  for (let y = startYear; y <= currentYear; y++) {
+    years.push(y);
+  }
+
   useEffect(() => {
     refreshToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,7 +81,7 @@ const FormTambahRL41 = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   const getRumahSakit = async (id) => {
@@ -100,7 +108,7 @@ const FormTambahRL41 = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const rlEmpatPenyakit = response.data.data.map((value) => {
         return value;
@@ -147,7 +155,7 @@ const FormTambahRL41 = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const DetailPenyakitTemplate = response.data.data.map((value) => {
@@ -415,7 +423,7 @@ const FormTambahRL41 = () => {
           const result = await axiosJWT.post(
             "/apisirs6v2/rlempattitiksatu",
             dataReady,
-            customConfig
+            customConfig,
           );
           toast("Data Berhasil Disimpan", {
             position: toast.POSITION.TOP_RIGHT,
@@ -428,7 +436,7 @@ const FormTambahRL41 = () => {
             `Data tidak bisa disimpan karena ,${error.response.data.message}`,
             {
               position: toast.POSITION.TOP_RIGHT,
-            }
+            },
           );
           setButtonStatus(false);
         }
@@ -437,7 +445,7 @@ const FormTambahRL41 = () => {
           `Data Gagal Disimpan, Data Jumlah Pasien Keluar Mati Lebih Dari Jumlah Pasien Hidup dan Mati`,
           {
             position: toast.POSITION.TOP_RIGHT,
-          }
+          },
         );
         setButtonStatus(false);
       }
@@ -448,7 +456,7 @@ const FormTambahRL41 = () => {
     if (object.target.value.length > object.target.maxLength) {
       object.target.value = object.target.value.slice(
         0,
-        object.target.maxLength
+        object.target.maxLength,
       );
     }
   };
@@ -640,7 +648,7 @@ const FormTambahRL41 = () => {
                       className="form-floating"
                       style={{ width: "100%", display: "inline-block" }}
                     >
-                      <input
+                      {/* <input
                         name="tahun"
                         type="number"
                         className="form-control"
@@ -650,7 +658,26 @@ const FormTambahRL41 = () => {
                         onChange={(e) => changeHandlerSingle(e)}
                         disabled={true}
                       />
-                      <label htmlFor="floatingInput">Tahun</label>
+                      <label htmlFor="floatingInput">Tahun</label> */}
+
+                      <select
+                        name="tahun"
+                        className="form-select"
+                        id="tahun"
+                        value={tahun}
+                        onChange={(e) => setTahun(e.target.value)}
+                      >
+                        <option value="">Pilih Tahun</option>
+
+                        {years.map((y) => (
+                          <option key={y} value={y}>
+                            {y}
+                          </option>
+                        ))}
+                      </select>
+
+                      <label htmlFor="tahun">Tahun</label>
+
                       <input
                         type="number"
                         id="jenisgolsebabid"
