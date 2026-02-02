@@ -11,7 +11,7 @@ import Spinner from "react-bootstrap/Spinner";
 import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const FormTambahRL36 = () => {
-  const [tahun, setTahun] = useState(2025);
+  const [tahun, setTahun] = useState("2025");
   const [bulan, setBulan] = useState("01");
   const [daftarBulan, setDaftarBulan] = useState([]);
   const [namaRS, setNamaRS] = useState("");
@@ -458,6 +458,13 @@ const FormTambahRL36 = () => {
     setBulan(e.target.value);
   };
 
+  const currentYear = new Date().getFullYear();
+  const daftarTahun = [];
+  for (let i = 2025; i <= currentYear; i++) {
+    daftarTahun.push(i);
+  }
+
+
   return (
     <div
       className="container"
@@ -556,17 +563,20 @@ const FormTambahRL36 = () => {
                   className="form-floating"
                   style={{ width: "50%", display: "inline-block" }}
                 >
-                  <input
+                  <select
                     name="tahun"
-                    type="number"
                     className="form-control"
                     id="floatingInput"
-                    min="2024"
-                    placeholder="Tahun"
                     value={tahun}
                     onChange={(e) => changeHandlerSingle(e)}
-                    disabled={true}
-                  />
+                  >
+                    {daftarTahun.map((tahun) => (
+                      <option key={tahun} value={tahun}>
+                        {tahun}
+                      </option>
+                    ))}
+                  </select>
+
                   <label htmlFor="floatingInput">Tahun</label>
                 </div>
               </div>

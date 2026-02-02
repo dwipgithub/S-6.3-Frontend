@@ -14,7 +14,7 @@ const FormTambahRL33 = () => {
   const [alamatRS, setAlamatRS] = useState("");
   const [namaPropinsi, setNamaPropinsi] = useState("");
   const [namaKabKota, setNamaKabKota] = useState("");
-  const [tahun, setTahun] = useState(2025);
+  const [tahun, setTahun] = useState("2025");
   const [bulan, setBulan] = useState(1);
   const [daftarBulan, setDaftarBulan] = useState([]);
   const [dataRL, setDataRL] = useState([]);
@@ -622,6 +622,13 @@ const FormTambahRL33 = () => {
     setBulan(e.target.value);
   };
 
+  const currentYear = new Date().getFullYear();
+  const daftarTahun = [];
+  for (let i = 2025; i <= currentYear; i++) {
+    daftarTahun.push(i);
+  }
+
+
   return (
     <div
       className="container"
@@ -716,16 +723,20 @@ const FormTambahRL33 = () => {
                   className="form-floating"
                   style={{ width: "50%", display: "inline-block" }}
                 >
-                  <input
+                <select
                     name="tahun"
-                    type="number"
                     className="form-control"
                     id="floatingInput"
-                    placeholder="Tahun"
                     value={tahun}
                     onChange={(e) => changeHandlerSingle(e)}
-                    disabled={true}
-                  />
+                  >
+                    {daftarTahun.map((tahun) => (
+                      <option key={tahun} value={tahun}>
+                        {tahun}
+                      </option>
+                    ))}
+                  </select>
+
                   <label htmlFor="tahun">Tahun</label>
                 </div>
               </div>
