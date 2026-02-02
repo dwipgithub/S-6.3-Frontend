@@ -455,7 +455,7 @@ const FormTambahRL51 = () => {
         }
       } else {
         toast(
-          `Data Gagal Disimpan, Data Jumlah Pasien Baru Lebih Dari Jumlah Kunjungan Pasien`,
+          `Data Gagal Disimpan, Data Jumlah Kasus Baru Lebih Dari Jumlah Kunjungan Pasien`,
           {
             position: toast.POSITION.TOP_RIGHT,
           },

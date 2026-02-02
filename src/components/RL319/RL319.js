@@ -78,7 +78,7 @@ const RL319 = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   const getRumahSakit = async (kabKotaId) => {
@@ -133,7 +133,7 @@ const RL319 = () => {
       };
       const results = await axiosJWT.get(
         "/apisirs6v2/rltigatitiksembilanbelas",
-        customConfig
+        customConfig,
       );
 
       const rlTigaTitikSembilanBelasDetails = results.data.data.map((value) => {
@@ -146,7 +146,25 @@ const RL319 = () => {
           dataRLTigaTitikSembilanBelasDetails.push(value);
         });
       });
-      setDataRL(dataRLTigaTitikSembilanBelasDetails);
+      const hasChildren2 = dataRLTigaTitikSembilanBelasDetails.some((item) => {
+        const no = item.golongan_obat_rl_tiga_titik_sembilan_belas?.no;
+        return no && String(no).startsWith("2.");
+      });
+      const hasChildren4 = dataRLTigaTitikSembilanBelasDetails.some((item) => {
+        const no = item.golongan_obat_rl_tiga_titik_sembilan_belas?.no;
+        return no && String(no).startsWith("4.");
+      });
+      const filteredData = dataRLTigaTitikSembilanBelasDetails.filter(
+        (item) => {
+          const no = String(
+            item.golongan_obat_rl_tiga_titik_sembilan_belas?.no,
+          );
+          if (no === "2" && !hasChildren2) return false;
+          if (no === "4" && !hasChildren4) return false;
+          return true;
+        },
+      );
+      setDataRL(filteredData);
       setRumahSakit(null);
       handleClose();
     } catch (error) {
@@ -180,21 +198,48 @@ const RL319 = () => {
         await axiosJWT.patch(
           "/apisirs6v2/rltigatitiksembilanbelasdetail/" + parent.id,
           parent.data,
-          customConfig
+          customConfig,
         );
       }
-      const results = await axiosJWT.delete(
+      await axiosJWT.delete(
         `/apisirs6v2/rltigatitiksembilanbelas/${id}`,
-        customConfig
+        customConfig,
       );
+
+      setDataRL((prevData) => {
+        const updatedData = prevData.filter((item) => item.id !== id);
+
+        const hasChildren2 = updatedData.some((item) => {
+          const no = item.golongan_obat_rl_tiga_titik_sembilan_belas?.no;
+          return no && String(no).startsWith("2.");
+        });
+        const hasChildren4 = updatedData.some((item) => {
+          const no = item.golongan_obat_rl_tiga_titik_sembilan_belas?.no;
+          return no && String(no).startsWith("4.");
+        });
+        const filteredData = updatedData.filter((item) => {
+          const no = String(
+            item.golongan_obat_rl_tiga_titik_sembilan_belas?.no,
+          );
+          if (no === "2" && !hasChildren2) return false;
+          if (no === "4" && !hasChildren4) return false;
+          return true;
+        });
+
+        if (parent) {
+          return filteredData.map((item) => {
+            if (item.id === parent.id) {
+              return { ...item, ...parent.data };
+            }
+            return item;
+          });
+        }
+        return filteredData;
+      });
 
       toast("Data Berhasil Dihapus", {
         position: toast.POSITION.TOP_RIGHT,
       });
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
     } catch (error) {
       console.log(error);
       toast("Data Gagal Disimpan", {
@@ -228,7 +273,7 @@ const RL319 = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     const newResponse = await axiosJWT.get(
@@ -241,14 +286,14 @@ const RL319 = () => {
         params: {
           tahun: tahun,
         },
-      }
+      },
     );
 
     let dataRLTigaTitikSembilanBelasDetails = [];
     const rlTigaTitikSembilanBelasDetails = newResponse.data.data.map(
       (value) => {
         return value.rl_tiga_titik_sembilan_belas_details;
-      }
+      },
     );
     rlTigaTitikSembilanBelasDetails.forEach((element) => {
       element.forEach((value) => {
@@ -291,7 +336,7 @@ const RL319 = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     return response.data.data;
@@ -433,6 +478,7 @@ const RL319 = () => {
 
   return (
     <div className="container" style={{ marginTop: "70px" }}>
+      <ToastContainer />
       <Modal show={show} onHide={handleClose} style={{ position: "fixed" }}>
         <Modal.Header closeButton>
           <Modal.Title>Filter</Modal.Title>
@@ -738,7 +784,7 @@ const RL319 = () => {
                 </tr>
               </thead>
               <tbody>
-                {dataRL.length > 1 ? (
+                {dataRL.length > 0 ? (
                   <>
                     {dataRL.map((value, index) => {
                       return (
@@ -756,7 +802,6 @@ const RL319 = () => {
                             />
                           </td>
                           <td className={style["sticky-column"]}>
-                            <ToastContainer />
                             {value.golongan_obat_rl_tiga_titik_sembilan_belas
                               .no != 4 &&
                             value.golongan_obat_rl_tiga_titik_sembilan_belas
