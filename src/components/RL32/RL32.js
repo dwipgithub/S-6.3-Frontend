@@ -870,7 +870,6 @@ const RL32 = () => {
                 placeholder="Tahun"
                 value={tahun}
                 onChange={(e) => tahunChangeHandler(e)}
-                disabled={true}
               />
               <label htmlFor="tahun">Tahun</label>
             </div>
