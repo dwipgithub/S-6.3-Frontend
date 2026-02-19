@@ -13,7 +13,7 @@ import { DownloadTableExcel } from "react-export-table-to-excel";
 import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
 const Absensi = () => {
-  const [namaRS, setNamaRS] = useState("");
+  const [namaRs, setNamaRs] = useState("");
   const [daftarProvinsi, setDaftarProvinsi] = useState([]);
   const [daftarKabKota, setDaftarKabKota] = useState([]);
   const [token, setToken] = useState("");
@@ -133,7 +133,7 @@ const Absensi = () => {
   };
 
   const changeHandlerNamaRs = (event) => {
-    setNamaRS(event.target.value);
+    setNamaRs(event.target.value);
   };
 
   const changeHandlerTahun = (event) => {
@@ -153,8 +153,8 @@ const Absensi = () => {
       parameterAbsensi.kabKotaId = kabKotaId;
     }
 
-    if (namaRS !== "") {
-      parameterAbsensi.namaRS = namaRS;
+    if (namaRs !== "") {
+      parameterAbsensi.namaRs = namaRs;
     }
 
     if (tahun !== "") {
@@ -180,7 +180,7 @@ const Absensi = () => {
             .concat("-")
             .concat(kabKotaId)
             .concat("-")
-            .concat(namaRS)
+            .concat(namaRs)
             .concat("-")
             .concat(tahun),
         )
@@ -283,13 +283,13 @@ const Absensi = () => {
                 >
                   <input
                     type="text"
-                    name="namaRS"
+                    name="namaRs"
                     className="form-control"
-                    value={namaRS}
+                    value={namaRs}
                     onChange={(e) => changeHandlerNamaRs(e)}
                     disabled={false}
                   />
-                  <label htmlFor="namaRS">Nama RS</label>
+                  <label htmlFor="namaRs">Nama RS</label>
                 </div>
 
                 <div className="mt-1">
