@@ -1993,10 +1993,10 @@ function TabTwo() {
     handleClose();
 
     setLoading(true);
-    try {
-      if (!initialDataLoaded) {
-        await getInitialData(); // hanya dipanggil sekali
-      }
+    // try {
+    //   if (!initialDataLoaded) {
+    //     await getInitialData(); // hanya dipanggil sekali
+    //   }
       await getPageData(requestedPage, requestedLimit); // dipanggil setiap kali request page
     } catch (error) {
       const detailMessage =
@@ -2064,7 +2064,8 @@ function TabTwo() {
   };
 
   const fetchData = (newPage) => {
-    getRL(null, newPage, limit);
+    // getRL(null, newPage, limit);
+    getDataRL(null,newPage,limit);
   };
 
   const getMasterUmur = async () => {
