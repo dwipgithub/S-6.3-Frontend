@@ -79,7 +79,7 @@ const RL33 = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   const getRumahSakit = async (kabKotaId) => {
@@ -123,8 +123,8 @@ const RL33 = () => {
       "Periode ".concat(
         String(months[bulan - 1].label)
           .concat(" ")
-          .concat(tahun)
-      )
+          .concat(tahun),
+      ),
     );
     setFilterLabel(filter);
 
@@ -135,13 +135,14 @@ const RL33 = () => {
           Authorization: `Bearer ${token}`,
         },
         params: {
+          rsId: rumahSakit.id,
           tahun: tahun,
           bulan: bulan,
         },
       };
       const results = await axiosJWT.get(
         "/apisirs6v2/rltigatitiktiga",
-        customConfig
+        customConfig,
       );
 
       const rlTigaTitikTigaDetails = results.data.data.map((value) => {
@@ -155,7 +156,7 @@ const RL33 = () => {
         });
       });
       setDataRL(dataRLTigaTitikTigaDetails);
-      setRumahSakit(null);
+      // setRumahSakit(null);
       handleClose();
     } catch (error) {
       console.log(error);
@@ -233,7 +234,7 @@ const RL33 = () => {
         await axiosJWT.patch(
           `/apisirs6v2/rltigatitiktigadetail/${parent.id}`,
           parent.data,
-          customConfig
+          customConfig,
         );
       }
       await axiosJWT.delete(`/apisirs6v2/rltigatitiktiga/${id}`, customConfig);
@@ -277,7 +278,7 @@ const RL33 = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     const newResponse = await axiosJWT.get("/apisirs6v2/rltigatitiktiga", {
@@ -286,6 +287,7 @@ const RL33 = () => {
         Authorization: `Bearer ${token}`,
       },
       params: {
+        rsId: rumahSakit.id,
         tahun: tahun,
         bulan: bulan,
       },
@@ -343,7 +345,7 @@ const RL33 = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     return response.data.data;
@@ -462,7 +464,7 @@ const RL33 = () => {
     .map((value, index) => {
       total.total_pasien_rujukan += parseInt(value.total_pasien_rujukan);
       total.total_pasien_non_rujukan += parseInt(
-        value.total_pasien_non_rujukan
+        value.total_pasien_non_rujukan,
       );
       total.tlp_dirawat += parseInt(value.tlp_dirawat);
       total.tlp_dirujuk += parseInt(value.tlp_dirujuk);
@@ -868,7 +870,7 @@ const RL33 = () => {
                       .filter(
                         (value) =>
                           value.total_pasien_rujukan > 0 ||
-                          value.total_pasien_non_rujukan > 0
+                          value.total_pasien_non_rujukan > 0,
                       )
                       .map((value, index) => {
                         return (
