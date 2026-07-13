@@ -80,7 +80,7 @@ const RL310 = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   const getBulan = async () => {
@@ -178,8 +178,8 @@ const RL310 = () => {
       "Periode ".concat(
         String(months[bulan - 1].label)
           .concat(" ")
-          .concat(tahun)
-      )
+          .concat(tahun),
+      ),
     );
     setFilterLabel(filter);
 
@@ -190,13 +190,14 @@ const RL310 = () => {
           Authorization: `Bearer ${token}`,
         },
         params: {
+          rsId: rumahSakit.id,
           tahun: tahun,
           bulan: bulan,
         },
       };
       const results = await axiosJWT.get(
         "/apisirs6v2/rltigatitiksepuluh",
-        customConfig
+        customConfig,
       );
 
       const rlTigaTitikSepuluhDetails = results.data.data.map((value) => {
@@ -210,7 +211,7 @@ const RL310 = () => {
         });
       });
       setDataRL(dataRLTigaTitikSepuluhDetails);
-      setRumahSakit(null);
+      // setRumahSakit(null);
       handleClose();
     } catch (error) {
       console.log(error);
@@ -228,7 +229,7 @@ const RL310 = () => {
     try {
       const results = await axiosJWT.delete(
         `/apisirs6v2/rltigatitiksepuluh/${id}`,
-        customConfig
+        customConfig,
       );
       // getDataRLTigaTitikSepuluh();
       toast("Data Berhasil Dihapus", {
@@ -370,16 +371,16 @@ const RL310 = () => {
     total.rm_diterima_faskes_lain += parseInt(value.rm_diterima_faskes_lain);
     total.rm_diterima_total_rm += parseInt(value.rm_diterima_total_rm);
     total.rm_dikembalikan_puskesmas += parseInt(
-      value.rm_dikembalikan_puskesmas
+      value.rm_dikembalikan_puskesmas,
     );
     total.rm_dikembalikan_rs += parseInt(value.rm_dikembalikan_rs);
     total.rm_dikembalikan_faskes_lain += parseInt(
-      value.rm_dikembalikan_faskes_lain
+      value.rm_dikembalikan_faskes_lain,
     );
     total.rm_dikembalikan_total_rm += parseInt(value.rm_dikembalikan_total_rm);
     total.keluar_pasien_rujukan += parseInt(value.keluar_pasien_rujukan);
     total.keluar_pasien_datang_sendiri += parseInt(
-      value.keluar_pasien_datang_sendiri
+      value.keluar_pasien_datang_sendiri,
     );
     total.keluar_total_keluar += parseInt(value.keluar_total_keluar);
     total.keluar_diterima_kembali += parseInt(value.keluar_diterima_kembali);
