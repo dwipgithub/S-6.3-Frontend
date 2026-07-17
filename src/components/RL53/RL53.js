@@ -551,7 +551,7 @@ const RL53 = () => {
                 placeholder="Tahun"
                 value={tahun}
                 onChange={(e) => tahunChangeHandler(e)}
-                disabled={true}
+                disabled={false}
               />
               <label htmlFor="tahun">Tahun</label>
             </div>
